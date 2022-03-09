@@ -1,0 +1,56 @@
+XL
+H 1 areas 4 global symbols
+M delay.c
+A text size 48 flags 0
+dbfile ..\M16_~02V\delay.c
+dbfile \\Mac\Home\Downloads\M16_~02V\delay.c
+dbfunc e delay_us 0 fV
+dbsym r t 10 c
+dbline FFFFFFFF 0
+dbline D 0
+dbline E 0
+dbline F 2
+dbline FFFFFFFE 4
+dbline 0 4
+dbfunc e delay_nus 6 fV
+dbsym r t 14 i
+dbline FFFFFFFF C
+dbline 18 C
+dbline 1A E
+dbline 19 10
+dbline FFFFFFFE 1E
+dbline 0 1E
+dbfunc e delay_ms 24 fV
+dbline FFFFFFFF 24
+dbline 21 24
+dbline 22 24
+dbline FFFFFFFE 28
+dbline 0 28
+dbfunc e delay_nms 2A fV
+dbsym r t 14 i
+dbline FFFFFFFF 30
+dbline 2B 30
+dbline 2D 32
+dbline 2C 34
+dbline FFFFFFFE 42
+dbline 0 42
+S _delay_nms Def002A
+S _delay_nus Def0006
+S _delay_ms Def0024
+S _delay_us Def0000
+T 00 00 02 E0 0A 95 08 95
+R 00 00 00 00
+T 06 00 4A 93 5A 93 A8 01 01 C0 F8 DF 1A 01 41 50
+R 00 00 00 00
+T 14 00 50 40 22 20 D1 F7 33 20 C1 F7 59 91 49 91
+R 00 00 00 00
+T 22 00 08 95
+R 00 00 00 00
+T 24 00 04 EF 11 E0 EE CF
+R 00 00 00 00
+T 2A 00 4A 93 5A 93 A8 01 01 C0 F8 DF 1A 01 41 50
+R 00 00 00 00
+T 38 00 50 40 22 20 D1 F7 33 20 C1 F7 59 91 49 91
+R 00 00 00 00
+T 46 00 08 95
+R 00 00 00 00

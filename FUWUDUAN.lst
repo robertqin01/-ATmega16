@@ -1,0 +1,1654 @@
+Interrupt Vectors
+    00000 940C 0055 JMP	__start|__text_start
+    00016 940C 041E JMP	_uart0_rx_isr
+
+Program Code (text area)
+__start|__text_start:
+    00055 E5CF      LDI	R28,0x5F
+    00056 E0D4      LDI	R29,4
+    00057 BFCD      OUT	0x3D,R28
+    00058 BFDE      OUT	0x3E,R29
+    00059 51CE      SUBI	R28,0x1E
+    0005A 40D0      SBCI	R29,0
+    0005B EA0A      LDI	R16,0xAA
+    0005C 8308      ST	Y,R16
+    0005D 2400      CLR	R0
+    0005E EBE5      LDI	R30,0xB5
+    0005F E0F0      LDI	R31,0
+    00060 E011      LDI	R17,1
+    00061 30E6      CPI	R30,6
+    00062 07F1      CPC	R31,R17
+    00063 F011      BEQ	0x0066
+    00064 9201      ST	Z+,R0
+    00065 CFFB      RJMP	0x0061
+    00066 8300      ST	Z,R16
+    00067 E5E4      LDI	R30,0x54
+    00068 E0F0      LDI	R31,0
+    00069 E6A0      LDI	R26,0x60
+    0006A E0B0      LDI	R27,0
+    0006B E010      LDI	R17,0
+    0006C E000      LDI	R16,0
+    0006D BF0B      OUT	0x3B,R16
+    0006E 3AE9      CPI	R30,0xA9
+    0006F 07F1      CPC	R31,R17
+    00070 F021      BEQ	0x0075
+    00071 95C8      LPM
+    00072 9631      ADIW	R30,1
+    00073 920D      ST	X+,R0
+    00074 CFF9      RJMP	0x006E
+    00075 940E 0181 CALL	_main
+_exit:
+    00077 CFFF      RJMP	_exit
+FILE: \\Mac\Home\Downloads\M16_~02V\delay.c
+(0001) 
+(0002) /*     AVRÏµÍ³µÄ´¦ÀíÆ÷Îª£º   ATMega16               */
+(0003) /*     AVRÏµÍ³µÄ¾§ÕñÆµÂÊ£º   8.0000 Mhz             */
+(0004) /*--------------------------------------------------*/
+(0005) 
+(0006) #include <iom16v.h> 
+(0007) #include "delay.h"
+(0008) 
+(0009) /*-----------------------------------------------------------------------
+(0010) delay_us	   :1usÑÓÊ±º¯Êý
+(0011) -----------------------------------------------------------------------*/
+(0012) void delay_us(void)
+(0013) {
+(0014)    unsigned char t=2;
+_delay_us:
+  t                    --> R16
+    00078 E002      LDI	R16,2
+(0015)    t--;
+    00079 950A      DEC	R16
+    0007A 9508      RET
+_delay_nus:
+  t                    --> R20
+    0007B 934A      ST	-Y,R20
+    0007C 935A      ST	-Y,R21
+    0007D 01A8      MOVW	R20,R16
+(0016) }
+(0017) 
+(0018) /*-----------------------------------------------------------------------
+(0019) delay_nus          :³¤ÑÓÊ±º¯Êý
+(0020) 
+(0021) ÊäÈë²ÎÊý: t        :ÑÓÊ±Ê±¼ä us
+(0022) -----------------------------------------------------------------------*/
+(0023) void delay_nus(unsigned int t)
+(0024) {
+    0007E C001      RJMP	0x0080
+(0025)     while (t--)
+(0026)        delay_us();
+    0007F DFF8      RCALL	_delay_us
+    00080 011A      MOVW	R2,R20
+    00081 5041      SUBI	R20,1
+    00082 4050      SBCI	R21,0
+    00083 2022      TST	R2
+    00084 F7D1      BNE	0x007F
+    00085 2033      TST	R3
+    00086 F7C1      BNE	0x007F
+    00087 9159      LD	R21,Y+
+    00088 9149      LD	R20,Y+
+    00089 9508      RET
+(0027) }
+(0028) 
+(0029) /*-----------------------------------------------------------------------
+(0030) delay_ms	   :1msÑÓÊ±º¯Êý
+(0031) -----------------------------------------------------------------------*/
+(0032) void delay_ms(void)
+(0033) {
+(0034)    delay_nus(500);
+_delay_ms:
+    0008A EF04      LDI	R16,0xF4
+    0008B E011      LDI	R17,1
+    0008C CFEE      RJMP	_delay_nus
+_delay_nms:
+  t                    --> R20
+    0008D 934A      ST	-Y,R20
+    0008E 935A      ST	-Y,R21
+    0008F 01A8      MOVW	R20,R16
+(0035) }
+(0036) 
+(0037) /*-----------------------------------------------------------------------
+(0038) delay_nms          :³¤ÑÓÊ±º¯Êý
+(0039) 
+(0040) ÊäÈë²ÎÊý: t        :ÑÓÊ±Ê±¼ä ms
+(0041) -----------------------------------------------------------------------*/
+(0042) void delay_nms(unsigned int t)
+(0043) {
+    00090 C001      RJMP	0x0092
+(0044)     while (t--)
+(0045)        delay_ms();
+    00091 DFF8      RCALL	_delay_ms
+    00092 011A      MOVW	R2,R20
+    00093 5041      SUBI	R20,1
+    00094 4050      SBCI	R21,0
+    00095 2022      TST	R2
+    00096 F7D1      BNE	0x0091
+    00097 2033      TST	R3
+    00098 F7C1      BNE	0x0091
+    00099 9159      LD	R21,Y+
+    0009A 9149      LD	R20,Y+
+    0009B 9508      RET
+FILE: \\Mac\Home\Downloads\M16_~02V\uart.h
+(0001) //°üº¬ËùÐèÍ·ÎÄ¼þ
+(0002) #include <iom16v.h> 
+(0003) #include <macros.h>
+(0004) 
+(0005) //UART0 initialize
+(0006) // desired baud rate: 9600
+(0007) // actual: baud rate:9615 (0.2%)
+(0008) void uart0_init(void)
+(0009) {
+(0010)  UCSRB = 0x00; //disable while setting baud rate
+_uart0_init:
+    0009C 2422      CLR	R2
+    0009D B82A      OUT	0x0A,R2
+(0011)  UCSRA = 0x00;
+    0009E B82B      OUT	0x0B,R2
+(0012)  UCSRC = BIT(URSEL) | 0x06;
+    0009F E886      LDI	R24,0x86
+    000A0 BD80      OUT	0x20,R24
+(0013)  UBRRL = 0x33; //set baud rate lo
+    000A1 E383      LDI	R24,0x33
+    000A2 B989      OUT	0x09,R24
+(0014)  UBRRH = 0x00; //set baud rate hi
+    000A3 BC20      OUT	0x20,R2
+(0015)  UCSRB = 0x98;//·¢ËÍÊ¹ÄÜ
+    000A4 E988      LDI	R24,0x98
+    000A5 B98A      OUT	0x0A,R24
+    000A6 9508      RET
+(0016) }
+(0017) 
+(0018) 
+(0019) void send_data(unsigned char back)
+(0020) {
+(0021)   while( !( UCSRA & (1<<UDRE)) ) ;
+_send_data:
+  back                 --> R16
+    000A7 9B5D      SBIS	0x0B,5
+    000A8 CFFE      RJMP	_send_data
+(0022)   UDR=back;
+    000A9 B90C      OUT	0x0C,R16
+    000AA 9508      RET
+FILE: \\Mac\Home\Downloads\M16_~02V\fuwuqi.C
+(0001) #include <iom16v.h> 
+(0002) #include <macros.h>   
+(0003) #include "uart.h"//ÑÓÊ±º¯Êý
+(0004) #include "delay.h"//ÑÓÊ±º¯Êý
+(0005) #define uint  unsigned int 
+(0006) #define uchar unsigned char
+(0007) 
+(0008) 
+(0009) 
+(0010) uchar jiaxianshi[5]="$00\0";
+(0011) 
+(0012) uchar  wupin_ming[5][13]={ 
+(0013) "1.YuWen    \0",//
+(0014) "2.ShuXue   \0",
+(0015) "3.YingYu   \0",
+(0016) "4.Wuli     \0",
+(0017) "5.Huaxue   \0",
+(0018) };
+(0019) 
+(0020) uchar xuhao;
+(0021) char mode;
+(0022) uchar ok;
+(0023) uchar num;
+(0024) 
+(0025) uchar wupin[5]={5,5,5,5,5};
+(0026) 
+(0027) unsigned char com_in_buf[50];
+(0028) unsigned char count;
+(0029) 
+(0030) 
+(0031) uchar  jianshu_jilu[3][6];
+(0032) uint   jiner_jilu[3];
+(0033) uint jiner;
+(0034) //¶Ë¿ÚÎ»¶¨Òå1602 Òý½ÅÏà¹Ø¿ØÖÆ
+(0035) #define EN_CLR    PORTD&= ~(1 << PD6) 
+(0036) #define EN_SET    PORTD |= (1 << PD6) 
+(0037) #define RW_CLR    PORTD &= ~(1 << PD5) 
+(0038) #define RW_SET    PORTD|= (1 << PD5) 
+(0039) #define RS_CLR    PORTD &= ~(1 << PD4) 
+(0040) #define RS_SET    PORTD |= (1 << PD4) 
+(0041) #define LCD_BUS   PORTB
+(0042) 
+(0043) #define k1  ((PINC&0x01))
+(0044) #define k2  ((PINC&0x02))
+(0045) #define k3  ((PINC&0x04))
+(0046) #define k4  ((PINC&0x08))
+(0047) 
+(0048) //#define lie2_0    PORTD&= ~(1 << PD5) 
+(0049) //#define lie2_1    PORTD |= (1 << PD5) 
+(0050) 
+(0051) //#define lie4_0    PORTD&= ~(1 << PD7) 
+(0052) //#define lie4_1    PORTD |= (1 << PD7) 
+(0053) 
+(0054) //#define BZ_CLR    PORTD&= ~(1 << PD0) 
+(0055) //#define BZ_SET    PORTD |= (1 << PD0) 
+(0056) 
+(0057) #define LCD_BUS_Direction_REG    DDRB
+(0058) #define LCD_BUS_READ_DATA        PINB
+(0059) #define LCD_ControlPort_SET      DDRD |=((1<<PD4) | (1<<PD5) | (1<<PD6))
+(0060) #define LCD_ControlPort_CLR      PORTD &=~((1<<PD4) | (1<<PD5) | (1<<PD6))
+(0061) 
+(0062) //LCD¶Ë¿Ú³õÊ¼»¯
+(0063) void LCDPort_Init(void)
+(0064) {    
+(0065)    LCD_BUS = 0X00;
+_LCDPort_Init:
+    000AB 2422      CLR	R2
+    000AC BA28      OUT	0x18,R2
+(0066) 	 LCD_BUS_Direction_REG =0XFF;   //LCDÊý¾Ý¶Ë¿ÚÉèÖÃÎªÊä³ö
+    000AD EF8F      LDI	R24,0xFF
+    000AE BB87      OUT	0x17,R24
+(0067) 	 LCD_ControlPort_CLR;          //RW RW ENµÍµçÆ½
+    000AF B382      IN	R24,0x12
+    000B0 788F      ANDI	R24,0x8F
+    000B1 BB82      OUT	0x12,R24
+(0068) 	 LCD_ControlPort_SET;          //RS RW EN½Å¾ùÉèÖÃÎªÊä³ö	
+    000B2 B381      IN	R24,0x11
+    000B3 6780      ORI	R24,0x70
+    000B4 BB81      OUT	0x11,R24
+    000B5 9508      RET
+_Write_Com:
+  LCD_Com              --> R20
+    000B6 934A      ST	-Y,R20
+    000B7 2F40      MOV	R20,R16
+(0069) }
+(0070) //LCDÐ´Ö¸Áî
+(0071) void Write_Com(unsigned char LCD_Com)
+(0072) {
+(0073)     // Check_Busy();
+(0074) 	 RW_CLR; //RW=0,Ð´ÃüÁî
+    000B8 9895      CBI	0x12,5
+(0075) 	 RS_CLR; //RS=0,Ð´Ö¸Áî
+    000B9 9894      CBI	0x12,4
+(0076) 	 EN_CLR;// E=0£¬ÏÂ½Ç  
+    000BA 9896      CBI	0x12,6
+(0077) 	 LCD_BUS&=0x0f;
+    000BB B388      IN	R24,0x18
+    000BC 708F      ANDI	R24,0xF
+    000BD BB88      OUT	0x18,R24
+(0078) 	 LCD_BUS|=(LCD_Com&0xf0);    //Êý¾ÝËÍÍùÊý¾Ý¶Ë¿Ú? 
+    000BE 2F84      MOV	R24,R20
+    000BF 7F80      ANDI	R24,0xF0
+    000C0 B228      IN	R2,0x18
+    000C1 2A28      OR	R2,R24
+    000C2 BA28      OUT	0x18,R2
+(0079) 	 //delay_nus(10);    //Õâ¸öÑÓÊ±·Ç³£ÖØÒª£¬½áºÏÊ±ÐòÍ¼À´Àí½â£¬¿ÉÒÔ¸úËÍÊý¾ÝË³Ðòµ÷»»
+(0080) 	 EN_SET; //E=1,Ð´²Ù×÷	
+    000C3 9A96      SBI	0x12,6
+(0081) 	 EN_CLR;// E=0£¬ÏÂ½Ç  
+    000C4 9896      CBI	0x12,6
+(0082) 
+(0083) 	 //while(1);
+(0084) 	 LCD_BUS&=0x0f;
+    000C5 B388      IN	R24,0x18
+    000C6 708F      ANDI	R24,0xF
+    000C7 BB88      OUT	0x18,R24
+(0085) 	 LCD_BUS|=(LCD_Com<<4);    //Êý¾ÝËÍÍùÊý¾Ý¶Ë¿Ú? 
+    000C8 2F84      MOV	R24,R20
+    000C9 708F      ANDI	R24,0xF
+    000CA 9582      SWAP	R24
+    000CB B228      IN	R2,0x18
+    000CC 2A28      OR	R2,R24
+    000CD BA28      OUT	0x18,R2
+(0086) 	 delay_nus(10);    //Õâ¸öÑÓÊ±·Ç³£ÖØÒª£¬½áºÏÊ±ÐòÍ¼À´Àí½â£¬¿ÉÒÔ¸úËÍÊý¾ÝË³Ðòµ÷»»
+    000CE E00A      LDI	R16,0xA
+    000CF E010      LDI	R17,0
+    000D0 940E 007B CALL	_delay_nus
+(0087)  	 EN_SET; //E=1,Ð´²Ù×÷	
+    000D2 9A96      SBI	0x12,6
+(0088) 	 EN_CLR;// E=0£¬ÏÂ½Ç  
+    000D3 9896      CBI	0x12,6
+(0089) 	 delay_nms(5); 
+    000D4 E005      LDI	R16,5
+    000D5 E010      LDI	R17,0
+    000D6 940E 008D CALL	_delay_nms
+    000D8 9149      LD	R20,Y+
+    000D9 9508      RET
+_Write_Data_Byte:
+  LCD_Data             --> R20
+    000DA 934A      ST	-Y,R20
+    000DB 2F40      MOV	R20,R16
+(0090) }
+(0091) 
+(0092) //LCDÐ´×Ö½ÚÊý¾Ý
+(0093) void Write_Data_Byte(unsigned char LCD_Data)
+(0094) {
+(0095)     // Check_Busy();
+(0096)      RW_CLR;//RW=0,Ð´Èë
+    000DC 9895      CBI	0x12,5
+(0097)      RS_SET; //RS=1,Êý¾Ý¼Ä´æÆ÷
+    000DD 9A94      SBI	0x12,4
+(0098)      EN_CLR;// E=0£¬ÏÂ½Ç   
+    000DE 9896      CBI	0x12,6
+(0099) 		 LCD_BUS&=0x0f;
+    000DF B388      IN	R24,0x18
+    000E0 708F      ANDI	R24,0xF
+    000E1 BB88      OUT	0x18,R24
+(0100) 	   LCD_BUS|=(LCD_Data&0xf0);//Êý¾ÝËÍÊý¾Ý¶Ë¿Ú  
+    000E2 2F84      MOV	R24,R20
+    000E3 7F80      ANDI	R24,0xF0
+    000E4 B228      IN	R2,0x18
+    000E5 2A28      OR	R2,R24
+    000E6 BA28      OUT	0x18,R2
+(0101)      //delay_nus(10);   //Õâ¸öÑÓÊ±·Ç³£ÖØÒª	 
+(0102)       EN_SET; //E=1,Ð´²Ù×÷	
+    000E7 9A96      SBI	0x12,6
+(0103) 	    EN_CLR;// E=0£¬ÏÂ½Ç   
+    000E8 9896      CBI	0x12,6
+(0104) 		 LCD_BUS&=0x0f;
+    000E9 B388      IN	R24,0x18
+    000EA 708F      ANDI	R24,0xF
+    000EB BB88      OUT	0x18,R24
+(0105) 	   LCD_BUS|=(LCD_Data<<4);//Êý¾ÝËÍÊý¾Ý¶Ë¿Ú  
+    000EC 2F84      MOV	R24,R20
+    000ED 708F      ANDI	R24,0xF
+    000EE 9582      SWAP	R24
+    000EF B228      IN	R2,0x18
+    000F0 2A28      OR	R2,R24
+    000F1 BA28      OUT	0x18,R2
+(0106)      //delay_nus(10);   //Õâ¸öÑÓÊ±·Ç³£ÖØÒª	 
+(0107)       EN_SET; //E=1,Ð´²Ù×÷	
+    000F2 9A96      SBI	0x12,6
+(0108) 	    EN_CLR;// E=0£¬ÏÂ½Ç   
+    000F3 9896      CBI	0x12,6
+(0109)      delay_nms(5);
+    000F4 E005      LDI	R16,5
+    000F5 E010      LDI	R17,0
+    000F6 940E 008D CALL	_delay_nms
+    000F8 9149      LD	R20,Y+
+    000F9 9508      RET
+(0110) 		// while(1);
+(0111) }
+(0112)    
+(0113) //LCD³õÊ¼»¯
+(0114) void LCD_Init(void)
+(0115) {
+(0116)    delay_nms(150);
+_LCD_Init:
+    000FA E906      LDI	R16,0x96
+    000FB E010      LDI	R17,0
+    000FC 940E 008D CALL	_delay_nms
+(0117) 	 delay_nms(15);
+    000FE E00F      LDI	R16,0xF
+    000FF E010      LDI	R17,0
+    00100 940E 008D CALL	_delay_nms
+(0118) 	 Write_Com(0x02);//ÏÔÊ¾Ä£Ê½ÉèÖÃ 16*2£¬5*7µãÕó£¬4Î»Êý¾Ý½Ó¿Ú
+    00102 E002      LDI	R16,2
+    00103 DFB2      RCALL	_Write_Com
+(0119) 
+(0120) 	 delay_nms(15);
+    00104 E00F      LDI	R16,0xF
+    00105 E010      LDI	R17,0
+    00106 940E 008D CALL	_delay_nms
+(0121) 	 Write_Com(0x28);//ÏÔÊ¾Ä£Ê½ÉèÖÃ 16*2£¬5*7µãÕó£¬4Î»Êý¾Ý½Ó¿Ú
+    00108 E208      LDI	R16,0x28
+    00109 DFAC      RCALL	_Write_Com
+(0122) 	 delay_nms(15);
+    0010A E00F      LDI	R16,0xF
+    0010B E010      LDI	R17,0
+    0010C 940E 008D CALL	_delay_nms
+(0123) 	 //Write_Com(0x28);//ÏÔÊ¾Ä£Ê½ÉèÖÃ 16*2£¬5*7µãÕó£¬4Î»Êý¾Ý½Ó¿Ú
+(0124) 	 //delay_nms(15);
+(0125)    Write_Com(0x06);//¹â±êÉèÖÃ£¬¶Á»òÐ´Ò»¸ö×Ö·ûºó£¬µØÖ·Ö¸Õë¼Ó1£¬¹â±ê¼Ó1£¬ÕûÆÁ²»ÒÆ¶¯
+    0010E E006      LDI	R16,6
+    0010F DFA6      RCALL	_Write_Com
+(0126) 	 delay_nms(15);
+    00110 E00F      LDI	R16,0xF
+    00111 E010      LDI	R17,0
+    00112 940E 008D CALL	_delay_nms
+(0127) 	//Write_Com(0x0f);//ÏÔÊ¾¿ª¹Ø¿ØÖÆ£¬¿ªÏÔÊ¾£¬¹â±êÏÔÊ¾£¬¹â±êÉÁË¸
+(0128) 	 Write_Com(0x0c);//ÏÔÊ¾¿ª¹Ø¿ØÖÆ£¬¿ªÏÔÊ¾£¬¹â±ê²»ÏÔÊ¾£¬¹â±ê²»ÉÁË¸ 
+    00114 E00C      LDI	R16,0xC
+    00115 DFA0      RCALL	_Write_Com
+(0129) 	 delay_nms(15);
+    00116 E00F      LDI	R16,0xF
+    00117 E010      LDI	R17,0
+    00118 940E 008D CALL	_delay_nms
+(0130) 	 Write_Com(0x01);;//ÇåÆÁ
+    0011A E001      LDI	R16,1
+    0011B DF9A      RCALL	_Write_Com
+(0131) 	 delay_nms(15);
+    0011C E00F      LDI	R16,0xF
+    0011D E010      LDI	R17,0
+    0011E 940C 008D JMP	_delay_nms
+_Write_Place_xy:
+  address              --> R20
+  y                    --> R10
+  x                    --> R22
+    00120 940E 054E CALL	push_xgsetF00C
+    00122 2EA2      MOV	R10,R18
+    00123 2F60      MOV	R22,R16
+(0132) }
+(0133) 
+(0134) 
+(0135) 
+(0136) //Ö¸¶¨µ±Ç°Ð´×Ö·ûµÄÎ»ÖÃ
+(0137) void Write_Place_xy(unsigned char x,unsigned char y)
+(0138) {
+(0139)      unsigned char address;
+(0140) 	 if(y==0)             //ÐÐÎ»ÖÃ
+    00124 20AA      TST	R10
+    00125 F419      BNE	0x0129
+(0141) 	 {
+(0142) 	      address=0x80+x; //ÁÐÎ»ÖÃ
+    00126 2F46      MOV	R20,R22
+    00127 5840      SUBI	R20,0x80
+(0143)      }
+    00128 C002      RJMP	0x012B
+(0144) 	 else 
+(0145) 	 {
+(0146) 	      address=0xc0+x;
+    00129 2F46      MOV	R20,R22
+    0012A 5440      SUBI	R20,0x40
+(0147) 	 }
+(0148) 	 Write_Com(address);  //Ð´µØÖ·90 d0
+    0012B 2F04      MOV	R16,R20
+    0012C DF89      RCALL	_Write_Com
+    0012D 940C 0555 JMP	pop_xgsetF00C
+_Write_Data_String:
+  Length               --> R12
+  i                    --> R10
+  data                 --> R20
+  y                    --> R12
+  x                    --> R10
+    0012F 940E 055C CALL	push_xgset303C
+    00131 2EC2      MOV	R12,R18
+    00132 2EA0      MOV	R10,R16
+    00133 814E      LDD	R20,Y+6
+    00134 815F      LDD	R21,Y+7
+(0149) 	 
+(0150) }
+(0151) 
+(0152) 
+(0153) //ÔÚÖ¸¶¨µÄÎ»ÖÃÐ´×Ö·û´®
+(0154) void Write_Data_String(unsigned char x,unsigned char y,unsigned char *data)
+(0155) {
+(0156)      unsigned char i;
+(0157) 	 unsigned char Length;
+(0158) 	 Write_Place_xy(x,y); //Ð´µØÖ·
+    00135 2D2C      MOV	R18,R12
+    00136 2D0A      MOV	R16,R10
+    00137 DFE8      RCALL	_Write_Place_xy
+(0159) 	 delay_nms(1);
+    00138 E001      LDI	R16,1
+    00139 E010      LDI	R17,0
+    0013A 940E 008D CALL	_delay_nms
+(0160)      Length=strlen(data);//µ÷ÓÃ×Ö·û´®º¯ÊýËã³ö×Ö·ûµÄ³¤¶È,²¢¸³Öµ¸øLength
+    0013C 018A      MOVW	R16,R20
+    0013D 940E 04FC CALL	_strlen
+    0013F 2EC0      MOV	R12,R16
+(0161)      for(i=0;i<Length;i++) //X×ø±êÓ¦Ð¡ÓÚ0xF
+    00140 24AA      CLR	R10
+    00141 C00A      RJMP	0x014C
+(0162)       {
+(0163)          Write_Data_Byte(*data); //ÏÔÊ¾µ¥¸ö×Ö·û
+    00142 01FA      MOVW	R30,R20
+    00143 8100      LD	R16,Z
+    00144 DF95      RCALL	_Write_Data_Byte
+(0164)          
+(0165)          data++;
+    00145 5F4F      SUBI	R20,0xFF
+    00146 4F5F      SBCI	R21,0xFF
+(0166) 				 delay_nms(1);
+    00147 E001      LDI	R16,1
+    00148 E010      LDI	R17,0
+    00149 940E 008D CALL	_delay_nms
+    0014B 94A3      INC	R10
+    0014C 14AC      CP	R10,R12
+    0014D F3A0      BCS	0x0142
+    0014E 940C 0563 JMP	pop_xgset303C
+_Write_Data_char:
+  Length               --> Y,+1
+  i                    --> Y,+1
+  data                 --> R10
+  y                    --> R14
+  x                    --> R12
+    00150 940E 0547 CALL	push_xgset00FC
+    00152 2EE2      MOV	R14,R18
+    00153 2EC0      MOV	R12,R16
+    00154 80AE      LDD	R10,Y+6
+(0167)       }
+(0168)  
+(0169) }
+(0170) 
+(0171) //ÔÚÖ¸¶¨µÄÎ»ÖÃÐ´×Ö·û´
+(0172) void Write_Data_char(unsigned char x,unsigned char y,unsigned char data)
+(0173) {
+(0174)      unsigned char i;
+(0175) 	 unsigned char Length;
+(0176) 	 Write_Place_xy(x,y); //Ð´µØÖ·
+    00155 2D2E      MOV	R18,R14
+    00156 2D0C      MOV	R16,R12
+    00157 DFC8      RCALL	_Write_Place_xy
+(0177) 	 delay_nms(1);
+    00158 E001      LDI	R16,1
+    00159 E010      LDI	R17,0
+    0015A 940E 008D CALL	_delay_nms
+(0178)     Write_Data_Byte(data); //ÏÔÊ¾µ¥¸ö×Ö·û
+    0015C 2D0A      MOV	R16,R10
+    0015D DF7C      RCALL	_Write_Data_Byte
+(0179) 	  delay_nms(1);
+    0015E E001      LDI	R16,1
+    0015F E010      LDI	R17,0
+    00160 940E 008D CALL	_delay_nms
+    00162 940C 053C JMP	pop_xgset00FC
+_ScanKey:
+  ret                  --> R20
+    00164 934A      ST	-Y,R20
+(0180)     
+(0181)  
+(0182) }
+(0183) 
+(0184) //¼üÅÌÉ¨Ãè£¬ÎÞ°´¼ü·µ»Ø0
+(0185) uchar ScanKey()
+(0186) {
+(0187)   uchar ret = 0xff;
+    00165 EF4F      LDI	R20,0xFF
+(0188) 
+(0189) 	// lie4_0;
+(0190) 	 delay_nms(5);
+    00166 E005      LDI	R16,5
+    00167 E010      LDI	R17,0
+    00168 940E 008D CALL	_delay_nms
+(0191) 	 if(!k1)
+    0016A 9998      SBIC	0x13,0
+    0016B C003      RJMP	0x016F
+(0192) 	 {
+(0193) 	  ret=1;
+    0016C E041      LDI	R20,1
+(0194) 	  while(!k1);
+    0016D 9B98      SBIS	0x13,0
+    0016E CFFE      RJMP	0x016D
+(0195) 	 }
+(0196) 	 if(!k2)
+    0016F 9999      SBIC	0x13,1
+    00170 C003      RJMP	0x0174
+(0197) 	 {
+(0198) 	  ret=2;
+    00171 E042      LDI	R20,2
+(0199) 	  while(!k2);
+    00172 9B99      SBIS	0x13,1
+    00173 CFFE      RJMP	0x0172
+(0200) 	 } 
+(0201) 	 if(!k3)
+    00174 999A      SBIC	0x13,2
+    00175 C003      RJMP	0x0179
+(0202) 	 {
+(0203) 	  ret=3;
+    00176 E043      LDI	R20,3
+(0204) 	  while(!k3);
+    00177 9B9A      SBIS	0x13,2
+    00178 CFFE      RJMP	0x0177
+(0205) 	 } 
+(0206) 	 if(!k4)
+    00179 999B      SBIC	0x13,3
+    0017A C003      RJMP	0x017E
+(0207) 	 {
+(0208) 	  ret=4;
+    0017B E044      LDI	R20,4
+(0209) 	  while(!k4);
+    0017C 9B9B      SBIS	0x13,3
+    0017D CFFE      RJMP	0x017C
+(0210) 	 } 
+(0211) 	// lie4_1;
+(0212) 	return ret;
+    0017E 2F04      MOV	R16,R20
+    0017F 9149      LD	R20,Y+
+    00180 9508      RET
+_main:
+  i                    --> Y,+3
+  shu                  --> Y,+3
+  z                    --> Y,+3
+  keynum               --> R20
+    00181 9722      SBIW	R28,2
+(0213) }
+(0214) 
+(0215) 
+(0216) 
+(0217) void main(void) 
+(0218) { 
+(0219)   uchar z; 
+(0220)   uchar shu;
+(0221) 	uchar i;
+(0222) 	uchar keynum;
+(0223) 	CLI(); //disable all interrupts
+    00182 94F8      BCLR	7
+(0224)   DDRC = 0X00;//IO ³õÊ¼»¯  0ÊÇÊäÈë
+    00183 2422      CLR	R2
+    00184 BA24      OUT	0x14,R2
+(0225)   PORTC = 0XFF;//IO ³õÊ¼»¯
+    00185 EF8F      LDI	R24,0xFF
+    00186 BB85      OUT	0x15,R24
+(0226) 	
+(0227)   DDRD = 0X02;//IO ³õÊ¼»¯
+    00187 E082      LDI	R24,2
+    00188 BB81      OUT	0x11,R24
+(0228)   PORTD=0XFF;
+    00189 EF8F      LDI	R24,0xFF
+    0018A BB82      OUT	0x12,R24
+(0229)   LCDPort_Init(); //¶Ë¿Ú³õÊ¼»¯
+    0018B DF1F      RCALL	_LCDPort_Init
+(0230) 		
+(0231)  LCD_Init();  // LCD³õÊ¼»¯
+    0018C DF6D      RCALL	_LCD_Init
+(0232)  Write_Data_String(0,0,"OK");//ÏÔÊ¾µÚÒ»ÐÐÊý¾Ý
+    0018D EB82      LDI	R24,0xB2
+    0018E E090      LDI	R25,0
+    0018F 8399      STD	Y+1,R25
+    00190 8388      ST	Y,R24
+    00191 2722      CLR	R18
+    00192 2700      CLR	R16
+    00193 DF9B      RCALL	_Write_Data_String
+(0233)  uart0_init();
+    00194 DF07      RCALL	_uart0_init
+(0234)   MCUCR = 0x00;
+    00195 2422      CLR	R2
+    00196 BE25      OUT	0x35,R2
+(0235)  GICR  = 0x00;
+    00197 BE2B      OUT	0x3B,R2
+(0236)  TIMSK = 0x00; //timer interrupt sources
+    00198 BE29      OUT	0x39,R2
+(0237)  SEI(); //re-enable interrupts
+    00199 9478      BSET	7
+    0019A C280      RJMP	0x041B
+(0238)  //all peripherals are now initialized
+(0239)  while(1)
+(0240)  {  
+(0241) 
+(0242)    keynum=ScanKey();//É¨Ãè°´¼ü
+    0019B DFC8      RCALL	_ScanKey
+    0019C 2F40      MOV	R20,R16
+(0243) 	 if(keynum!=0xff)//ÓÐ°´¼ü°´ÏÂ
+    0019D 3F0F      CPI	R16,0xFF
+    0019E F409      BNE	0x01A0
+    0019F C071      RJMP	0x0211
+(0244) 	 {
+(0245) 	 	 if(keynum==1)//ÓÐ°´¼ü°´ÏÂ
+    001A0 3001      CPI	R16,1
+    001A1 F009      BEQ	0x01A3
+    001A2 C056      RJMP	0x01F9
+(0246) 		 {
+(0247) 	      send_data('S');
+    001A3 E503      LDI	R16,0x53
+    001A4 DF02      RCALL	_send_data
+(0248) 		  send_data('A');
+    001A5 E401      LDI	R16,0x41
+    001A6 DF00      RCALL	_send_data
+(0249) 		  send_data(wupin[0]/10+0x30);
+    001A7 E01A      LDI	R17,0xA
+    001A8 9100 00A6 LDS	R16,wupin
+    001AA 940E 0526 CALL	div8u
+    001AC 5D00      SUBI	R16,0xD0
+    001AD DEF9      RCALL	_send_data
+(0250) 	      send_data(wupin[0]%10+0x30);
+    001AE E01A      LDI	R17,0xA
+    001AF 9100 00A6 LDS	R16,wupin
+    001B1 940E 0524 CALL	mod8u
+    001B3 5D00      SUBI	R16,0xD0
+    001B4 DEF2      RCALL	_send_data
+(0251) 		  send_data('B');
+    001B5 E402      LDI	R16,0x42
+    001B6 DEF0      RCALL	_send_data
+(0252) 		  send_data(wupin[1]/10+0x30);
+    001B7 E01A      LDI	R17,0xA
+    001B8 9100 00A7 LDS	R16,wupin+1
+    001BA 940E 0526 CALL	div8u
+    001BC 5D00      SUBI	R16,0xD0
+    001BD DEE9      RCALL	_send_data
+(0253) 	      send_data(wupin[1]%10+0x30);
+    001BE E01A      LDI	R17,0xA
+    001BF 9100 00A7 LDS	R16,wupin+1
+    001C1 940E 0524 CALL	mod8u
+    001C3 5D00      SUBI	R16,0xD0
+    001C4 DEE2      RCALL	_send_data
+(0254) 		  send_data('C');
+    001C5 E403      LDI	R16,0x43
+    001C6 DEE0      RCALL	_send_data
+(0255) 		  send_data(wupin[2]/10+0x30);
+    001C7 E01A      LDI	R17,0xA
+    001C8 9100 00A8 LDS	R16,wupin+2
+    001CA 940E 0526 CALL	div8u
+    001CC 5D00      SUBI	R16,0xD0
+    001CD DED9      RCALL	_send_data
+(0256) 	      send_data(wupin[2]%10+0x30);	
+    001CE E01A      LDI	R17,0xA
+    001CF 9100 00A8 LDS	R16,wupin+2
+    001D1 940E 0524 CALL	mod8u
+    001D3 5D00      SUBI	R16,0xD0
+    001D4 DED2      RCALL	_send_data
+(0257) 		  send_data('D');
+    001D5 E404      LDI	R16,0x44
+    001D6 DED0      RCALL	_send_data
+(0258) 		  send_data(wupin[3]/10+0x30);
+    001D7 E01A      LDI	R17,0xA
+    001D8 9100 00A9 LDS	R16,wupin+3
+    001DA 940E 0526 CALL	div8u
+    001DC 5D00      SUBI	R16,0xD0
+    001DD DEC9      RCALL	_send_data
+(0259) 	      send_data(wupin[3]%10+0x30);		  
+    001DE E01A      LDI	R17,0xA
+    001DF 9100 00A9 LDS	R16,wupin+3
+    001E1 940E 0524 CALL	mod8u
+    001E3 5D00      SUBI	R16,0xD0
+    001E4 DEC2      RCALL	_send_data
+(0260) 		  send_data('E');
+    001E5 E405      LDI	R16,0x45
+    001E6 DEC0      RCALL	_send_data
+(0261) 		  send_data(wupin[4]/10+0x30);
+    001E7 E01A      LDI	R17,0xA
+    001E8 9100 00AA LDS	R16,wupin+4
+    001EA 940E 0526 CALL	div8u
+    001EC 5D00      SUBI	R16,0xD0
+    001ED DEB9      RCALL	_send_data
+(0262) 	      send_data(wupin[4]%10+0x30);	  
+    001EE E01A      LDI	R17,0xA
+    001EF 9100 00AA LDS	R16,wupin+4
+    001F1 940E 0524 CALL	mod8u
+    001F3 5D00      SUBI	R16,0xD0
+    001F4 DEB2      RCALL	_send_data
+(0263) 		  //send_data('F');
+(0264) 		  //send_data(wupin[5]/10+0x30);
+(0265) 	      //send_data(wupin[5]%10+0x30);	
+(0266) 		  send_data(0X0D);
+    001F5 E00D      LDI	R16,0xD
+    001F6 DEB0      RCALL	_send_data
+(0267) 		  send_data(0X0A); 		  
+    001F7 E00A      LDI	R16,0xA
+    001F8 DEAE      RCALL	_send_data
+(0268) 	     }
+(0269) 		 
+(0270) 		  if(keynum==2)//ÇÐ»»²Ëµ¥
+    001F9 3042      CPI	R20,2
+    001FA F451      BNE	0x0205
+(0271) 		 {
+(0272)            xuhao++;
+    001FB 9180 0105 LDS	R24,xuhao
+    001FD 5F8F      SUBI	R24,0xFF
+    001FE 9380 0105 STS	xuhao,R24
+(0273)            if(xuhao>=5)
+    00200 3085      CPI	R24,5
+    00201 F018      BCS	0x0205
+(0274)            xuhao=0;    
+    00202 2422      CLR	R2
+    00203 9220 0105 STS	xuhao,R2
+(0275) 	     } 
+(0276) 		 
+(0277) 		 if(keynum==3)//ÇÐ»»ÓÃ»§
+    00205 3043      CPI	R20,3
+    00206 F451      BNE	0x0211
+(0278) 		 {
+(0279)            num++;
+    00207 9180 0102 LDS	R24,num
+    00209 5F8F      SUBI	R24,0xFF
+    0020A 9380 0102 STS	num,R24
+(0280)            if(num>=3)
+    0020C 3083      CPI	R24,3
+    0020D F018      BCS	0x0211
+(0281)            num=0;    
+    0020E 2422      CLR	R2
+    0020F 9220 0102 STS	num,R2
+(0282) 	     } 
+(0283) 		 
+(0284) 	 }
+(0285) 	 
+(0286) 	 if(ok==1)// ÊÕµ½ÕËµ¥  ¼ÆËã×Ü¼Û·µ»Ø
+    00211 9180 0103 LDS	R24,ok
+    00213 3081      CPI	R24,1
+    00214 F009      BEQ	0x0216
+    00215 C15C      RJMP	0x0372
+(0287) 	 {
+(0288) 	  ok=0;
+    00216 2422      CLR	R2
+    00217 9220 0103 STS	ok,R2
+(0289) 	  
+(0290) 	  jiner=jianshu_jilu[0][0]*wupin[0];
+    00219 9110 00A6 LDS	R17,wupin
+    0021B 9100 00BD LDS	R16,jianshu_jilu
+    0021D 0301      MULSU	R16,R17
+    0021E 9210 00B6 STS	jiner+1,R1
+    00220 9200 00B5 STS	jiner,R0
+(0291) 	  jiner+=jianshu_jilu[0][1]*wupin[1];
+    00222 9110 00A7 LDS	R17,wupin+1
+    00224 9100 00BE LDS	R16,jianshu_jilu+1
+    00226 0301      MULSU	R16,R17
+    00227 9020 00B5 LDS	R2,jiner
+    00229 9030 00B6 LDS	R3,jiner+1
+    0022B 0C20      ADD	R2,R0
+    0022C 1C31      ADC	R3,R1
+    0022D 9230 00B6 STS	jiner+1,R3
+    0022F 9220 00B5 STS	jiner,R2
+(0292) 	  jiner+=jianshu_jilu[0][2]*wupin[2];
+    00231 9110 00A8 LDS	R17,wupin+2
+    00233 9100 00BF LDS	R16,jianshu_jilu+2
+    00235 0301      MULSU	R16,R17
+    00236 0C20      ADD	R2,R0
+    00237 1C31      ADC	R3,R1
+    00238 9230 00B6 STS	jiner+1,R3
+    0023A 9220 00B5 STS	jiner,R2
+(0293) 	  jiner+=jianshu_jilu[0][3]*wupin[3];
+    0023C 9110 00A9 LDS	R17,wupin+3
+    0023E 9100 00C0 LDS	R16,jianshu_jilu+3
+    00240 0301      MULSU	R16,R17
+    00241 0C20      ADD	R2,R0
+    00242 1C31      ADC	R3,R1
+    00243 9230 00B6 STS	jiner+1,R3
+    00245 9220 00B5 STS	jiner,R2
+(0294) 	  jiner+=jianshu_jilu[0][4]*wupin[4];
+    00247 9110 00AA LDS	R17,wupin+4
+    00249 9100 00C1 LDS	R16,jianshu_jilu+4
+    0024B 0301      MULSU	R16,R17
+    0024C 0C20      ADD	R2,R0
+    0024D 1C31      ADC	R3,R1
+    0024E 9230 00B6 STS	jiner+1,R3
+    00250 9220 00B5 STS	jiner,R2
+(0295) 	  //jiner+=jianshu_jilu[0][5]*wupin[5];
+(0296) 	  jiner_jilu[0]=jiner;    
+    00252 9230 00B8 STS	jiner_jilu+1,R3
+    00254 9220 00B7 STS	jiner_jilu,R2
+(0297) 
+(0298) 	  jiner=jianshu_jilu[1][0]*wupin[0];
+    00256 9110 00A6 LDS	R17,wupin
+    00258 9100 00C3 LDS	R16,jianshu_jilu+6
+    0025A 0301      MULSU	R16,R17
+    0025B 9210 00B6 STS	jiner+1,R1
+    0025D 9200 00B5 STS	jiner,R0
+(0299) 	  jiner+=jianshu_jilu[1][1]*wupin[1];
+    0025F 9110 00A7 LDS	R17,wupin+1
+    00261 9100 00C4 LDS	R16,jianshu_jilu+7
+    00263 0301      MULSU	R16,R17
+    00264 9020 00B5 LDS	R2,jiner
+    00266 9030 00B6 LDS	R3,jiner+1
+    00268 0C20      ADD	R2,R0
+    00269 1C31      ADC	R3,R1
+    0026A 9230 00B6 STS	jiner+1,R3
+    0026C 9220 00B5 STS	jiner,R2
+(0300) 	  jiner+=jianshu_jilu[1][2]*wupin[2];
+    0026E 9110 00A8 LDS	R17,wupin+2
+    00270 9100 00C5 LDS	R16,jianshu_jilu+8
+    00272 0301      MULSU	R16,R17
+    00273 0C20      ADD	R2,R0
+    00274 1C31      ADC	R3,R1
+    00275 9230 00B6 STS	jiner+1,R3
+    00277 9220 00B5 STS	jiner,R2
+(0301) 	  jiner+=jianshu_jilu[1][3]*wupin[3];
+    00279 9110 00A9 LDS	R17,wupin+3
+    0027B 9100 00C6 LDS	R16,jianshu_jilu+9
+    0027D 0301      MULSU	R16,R17
+    0027E 0C20      ADD	R2,R0
+    0027F 1C31      ADC	R3,R1
+    00280 9230 00B6 STS	jiner+1,R3
+    00282 9220 00B5 STS	jiner,R2
+(0302) 	  jiner+=jianshu_jilu[1][4]*wupin[4];
+    00284 9110 00AA LDS	R17,wupin+4
+    00286 9100 00C7 LDS	R16,jianshu_jilu+10
+    00288 0301      MULSU	R16,R17
+    00289 0C20      ADD	R2,R0
+    0028A 1C31      ADC	R3,R1
+    0028B 9230 00B6 STS	jiner+1,R3
+    0028D 9220 00B5 STS	jiner,R2
+(0303) 	  //jiner+=jianshu_jilu[1][5]*wupin[5];
+(0304) 	  jiner_jilu[1]=jiner;  
+    0028F 9230 00BA STS	jiner_jilu+3,R3
+    00291 9220 00B9 STS	jiner_jilu+2,R2
+(0305) 	  
+(0306) 	  jiner=jianshu_jilu[2][0]*wupin[0];
+    00293 9110 00A6 LDS	R17,wupin
+    00295 9100 00C9 LDS	R16,jianshu_jilu+12
+    00297 0301      MULSU	R16,R17
+    00298 9210 00B6 STS	jiner+1,R1
+    0029A 9200 00B5 STS	jiner,R0
+(0307) 	  jiner+=jianshu_jilu[2][1]*wupin[1];
+    0029C 9110 00A7 LDS	R17,wupin+1
+    0029E 9100 00CA LDS	R16,jianshu_jilu+13
+    002A0 0301      MULSU	R16,R17
+    002A1 9020 00B5 LDS	R2,jiner
+    002A3 9030 00B6 LDS	R3,jiner+1
+    002A5 0C20      ADD	R2,R0
+    002A6 1C31      ADC	R3,R1
+    002A7 9230 00B6 STS	jiner+1,R3
+    002A9 9220 00B5 STS	jiner,R2
+(0308) 	  jiner+=jianshu_jilu[2][2]*wupin[2];
+    002AB 9110 00A8 LDS	R17,wupin+2
+    002AD 9100 00CB LDS	R16,jianshu_jilu+14
+    002AF 0301      MULSU	R16,R17
+    002B0 0C20      ADD	R2,R0
+    002B1 1C31      ADC	R3,R1
+    002B2 9230 00B6 STS	jiner+1,R3
+    002B4 9220 00B5 STS	jiner,R2
+(0309) 	  jiner+=jianshu_jilu[2][3]*wupin[3];
+    002B6 9110 00A9 LDS	R17,wupin+3
+    002B8 9100 00CC LDS	R16,jianshu_jilu+15
+    002BA 0301      MULSU	R16,R17
+    002BB 0C20      ADD	R2,R0
+    002BC 1C31      ADC	R3,R1
+    002BD 9230 00B6 STS	jiner+1,R3
+    002BF 9220 00B5 STS	jiner,R2
+(0310) 	  jiner+=jianshu_jilu[2][4]*wupin[4];
+    002C1 9110 00AA LDS	R17,wupin+4
+    002C3 9100 00CD LDS	R16,jianshu_jilu+16
+    002C5 0301      MULSU	R16,R17
+    002C6 0C20      ADD	R2,R0
+    002C7 1C31      ADC	R3,R1
+    002C8 9230 00B6 STS	jiner+1,R3
+    002CA 9220 00B5 STS	jiner,R2
+(0311) 	  //jiner+=jianshu_jilu[2][5]*wupin[5];
+(0312) 	 jiner_jilu[2]=jiner;  
+    002CC 9230 00BC STS	jiner_jilu+5,R3
+    002CE 9220 00BB STS	jiner_jilu+4,R2
+(0313) 	  
+(0314) 
+(0315) 		  send_data('J');
+    002D0 E40A      LDI	R16,0x4A
+    002D1 DDD5      RCALL	_send_data
+(0316) 		  send_data(jiner_jilu[0]/1000+0x30);
+    002D2 EE28      LDI	R18,0xE8
+    002D3 E033      LDI	R19,3
+    002D4 9100 00B7 LDS	R16,jiner_jilu
+    002D6 9110 00B8 LDS	R17,jiner_jilu+1
+    002D8 940E 050A CALL	div16u
+    002DA 5D00      SUBI	R16,0xD0
+    002DB 4F1F      SBCI	R17,0xFF
+    002DC DDCA      RCALL	_send_data
+(0317) 		  send_data(jiner_jilu[0]/100%10+0x30);
+    002DD E624      LDI	R18,0x64
+    002DE E030      LDI	R19,0
+    002DF 9100 00B7 LDS	R16,jiner_jilu
+    002E1 9110 00B8 LDS	R17,jiner_jilu+1
+    002E3 940E 050A CALL	div16u
+    002E5 E02A      LDI	R18,0xA
+    002E6 E030      LDI	R19,0
+    002E7 940E 0508 CALL	mod16u
+    002E9 5D00      SUBI	R16,0xD0
+    002EA 4F1F      SBCI	R17,0xFF
+    002EB DDBB      RCALL	_send_data
+(0318) 		  send_data(jiner_jilu[0]/10%10+0x30);
+    002EC E02A      LDI	R18,0xA
+    002ED E030      LDI	R19,0
+    002EE 9100 00B7 LDS	R16,jiner_jilu
+    002F0 9110 00B8 LDS	R17,jiner_jilu+1
+    002F2 940E 050A CALL	div16u
+    002F4 E02A      LDI	R18,0xA
+    002F5 E030      LDI	R19,0
+    002F6 940E 0508 CALL	mod16u
+    002F8 5D00      SUBI	R16,0xD0
+    002F9 4F1F      SBCI	R17,0xFF
+    002FA DDAC      RCALL	_send_data
+(0319) 		  send_data(jiner_jilu[0]%10+0x30);
+    002FB E02A      LDI	R18,0xA
+    002FC E030      LDI	R19,0
+    002FD 9100 00B7 LDS	R16,jiner_jilu
+    002FF 9110 00B8 LDS	R17,jiner_jilu+1
+    00301 940E 0508 CALL	mod16u
+    00303 5D00      SUBI	R16,0xD0
+    00304 4F1F      SBCI	R17,0xFF
+    00305 DDA1      RCALL	_send_data
+(0320) 		  
+(0321) 		  send_data(jiner_jilu[1]/1000+0x30);
+    00306 EE28      LDI	R18,0xE8
+    00307 E033      LDI	R19,3
+    00308 9100 00B9 LDS	R16,jiner_jilu+2
+    0030A 9110 00BA LDS	R17,jiner_jilu+3
+    0030C 940E 050A CALL	div16u
+    0030E 5D00      SUBI	R16,0xD0
+    0030F 4F1F      SBCI	R17,0xFF
+    00310 DD96      RCALL	_send_data
+(0322) 		  send_data(jiner_jilu[1]/100%10+0x30);
+    00311 E624      LDI	R18,0x64
+    00312 E030      LDI	R19,0
+    00313 9100 00B9 LDS	R16,jiner_jilu+2
+    00315 9110 00BA LDS	R17,jiner_jilu+3
+    00317 940E 050A CALL	div16u
+    00319 E02A      LDI	R18,0xA
+    0031A E030      LDI	R19,0
+    0031B 940E 0508 CALL	mod16u
+    0031D 5D00      SUBI	R16,0xD0
+    0031E 4F1F      SBCI	R17,0xFF
+    0031F DD87      RCALL	_send_data
+(0323) 		  send_data(jiner_jilu[1]/10%10+0x30);
+    00320 E02A      LDI	R18,0xA
+    00321 E030      LDI	R19,0
+    00322 9100 00B9 LDS	R16,jiner_jilu+2
+    00324 9110 00BA LDS	R17,jiner_jilu+3
+    00326 940E 050A CALL	div16u
+    00328 E02A      LDI	R18,0xA
+    00329 E030      LDI	R19,0
+    0032A 940E 0508 CALL	mod16u
+    0032C 5D00      SUBI	R16,0xD0
+    0032D 4F1F      SBCI	R17,0xFF
+    0032E DD78      RCALL	_send_data
+(0324) 		  send_data(jiner_jilu[1]%10+0x30);
+    0032F E02A      LDI	R18,0xA
+    00330 E030      LDI	R19,0
+    00331 9100 00B9 LDS	R16,jiner_jilu+2
+    00333 9110 00BA LDS	R17,jiner_jilu+3
+    00335 940E 0508 CALL	mod16u
+    00337 5D00      SUBI	R16,0xD0
+    00338 4F1F      SBCI	R17,0xFF
+    00339 DD6D      RCALL	_send_data
+(0325) 		  
+(0326) 		  send_data(jiner_jilu[2]/1000+0x30);
+    0033A EE28      LDI	R18,0xE8
+    0033B E033      LDI	R19,3
+    0033C 9100 00BB LDS	R16,jiner_jilu+4
+    0033E 9110 00BC LDS	R17,jiner_jilu+5
+    00340 940E 050A CALL	div16u
+    00342 5D00      SUBI	R16,0xD0
+    00343 4F1F      SBCI	R17,0xFF
+    00344 DD62      RCALL	_send_data
+(0327) 		  send_data(jiner_jilu[2]/100%10+0x30);
+    00345 E624      LDI	R18,0x64
+    00346 E030      LDI	R19,0
+    00347 9100 00BB LDS	R16,jiner_jilu+4
+    00349 9110 00BC LDS	R17,jiner_jilu+5
+    0034B 940E 050A CALL	div16u
+    0034D E02A      LDI	R18,0xA
+    0034E E030      LDI	R19,0
+    0034F 940E 0508 CALL	mod16u
+    00351 5D00      SUBI	R16,0xD0
+    00352 4F1F      SBCI	R17,0xFF
+    00353 DD53      RCALL	_send_data
+(0328) 		  send_data(jiner_jilu[2]/10%10+0x30);
+    00354 E02A      LDI	R18,0xA
+    00355 E030      LDI	R19,0
+    00356 9100 00BB LDS	R16,jiner_jilu+4
+    00358 9110 00BC LDS	R17,jiner_jilu+5
+    0035A 940E 050A CALL	div16u
+    0035C E02A      LDI	R18,0xA
+    0035D E030      LDI	R19,0
+    0035E 940E 0508 CALL	mod16u
+    00360 5D00      SUBI	R16,0xD0
+    00361 4F1F      SBCI	R17,0xFF
+    00362 DD44      RCALL	_send_data
+(0329) 		  send_data(jiner_jilu[2]%10+0x30);  
+    00363 E02A      LDI	R18,0xA
+    00364 E030      LDI	R19,0
+    00365 9100 00BB LDS	R16,jiner_jilu+4
+    00367 9110 00BC LDS	R17,jiner_jilu+5
+    00369 940E 0508 CALL	mod16u
+    0036B 5D00      SUBI	R16,0xD0
+    0036C 4F1F      SBCI	R17,0xFF
+    0036D DD39      RCALL	_send_data
+(0330) 		  
+(0331) 		  send_data(0X0D);
+    0036E E00D      LDI	R16,0xD
+    0036F DD37      RCALL	_send_data
+(0332) 		  send_data(0X0A); 	  
+    00370 E00A      LDI	R16,0xA
+    00371 DD35      RCALL	_send_data
+(0333) 	  
+(0334) 	  
+(0335) 	  
+(0336) 	 }
+(0337) 
+(0338) 
+(0339) 	 
+(0340) 	
+(0341)   //********ÏÔÊ¾²Ëµ¥µÚÒ»ÐÐ*******
+(0342)   jiaxianshi[2]=wupin[xuhao]/10+0x30;
+    00372 EA86      LDI	R24,0xA6
+    00373 E090      LDI	R25,0
+    00374 91E0 0105 LDS	R30,xuhao
+    00376 27FF      CLR	R31
+    00377 0FE8      ADD	R30,R24
+    00378 1FF9      ADC	R31,R25
+    00379 8100      LD	R16,Z
+    0037A E01A      LDI	R17,0xA
+    0037B 940E 0526 CALL	div8u
+    0037D 2F80      MOV	R24,R16
+    0037E 5D80      SUBI	R24,0xD0
+    0037F 9380 0062 STS	jiaxianshi+2,R24
+(0343)   jiaxianshi[3]=wupin[xuhao]%10+0x30;
+    00381 EA86      LDI	R24,0xA6
+    00382 E090      LDI	R25,0
+    00383 91E0 0105 LDS	R30,xuhao
+    00385 27FF      CLR	R31
+    00386 0FE8      ADD	R30,R24
+    00387 1FF9      ADC	R31,R25
+    00388 8100      LD	R16,Z
+    00389 E01A      LDI	R17,0xA
+    0038A 940E 0524 CALL	mod8u
+    0038C 2F80      MOV	R24,R16
+    0038D 5D80      SUBI	R24,0xD0
+    0038E 9380 0063 STS	jiaxianshi+3,R24
+(0344)   Write_Data_String(0,0,wupin_ming[xuhao]);//ÏÔÊ¾µÚÒ»ÐÐÊý¾Ý
+    00390 9110 0105 LDS	R17,xuhao
+    00392 E00D      LDI	R16,0xD
+    00393 0301      MULSU	R16,R17
+    00394 0110      MOVW	R2,R0
+    00395 E685      LDI	R24,0x65
+    00396 E090      LDI	R25,0
+    00397 0E28      ADD	R2,R24
+    00398 1E39      ADC	R3,R25
+    00399 8239      STD	Y+1,R3
+    0039A 8228      ST	Y,R2
+    0039B 2722      CLR	R18
+    0039C 2700      CLR	R16
+    0039D DD91      RCALL	_Write_Data_String
+(0345)   Write_Data_String(12,0,jiaxianshi);//ÏÔÊ¾µÚÒ»ÐÐÊý¾Ý
+    0039E E680      LDI	R24,0x60
+    0039F E090      LDI	R25,0
+    003A0 8399      STD	Y+1,R25
+    003A1 8388      ST	Y,R24
+    003A2 2722      CLR	R18
+    003A3 E00C      LDI	R16,0xC
+    003A4 DD8A      RCALL	_Write_Data_String
+(0346)   
+(0347)   Write_Data_String(0,1,"MZ:");//
+    003A5 EA8E      LDI	R24,0xAE
+    003A6 E090      LDI	R25,0
+    003A7 8399      STD	Y+1,R25
+    003A8 8388      ST	Y,R24
+    003A9 E021      LDI	R18,1
+    003AA 2700      CLR	R16
+    003AB DD83      RCALL	_Write_Data_String
+(0348)   Write_Data_Byte((num+1)+0x30); //ÏÔÊ¾µ¥¸ö×Ö·û
+    003AC 9100 0102 LDS	R16,num
+    003AE 5C0F      SUBI	R16,0xCF
+    003AF DD2A      RCALL	_Write_Data_Byte
+(0349)   
+(0350)    Write_Data_String(13,1,"M:");//
+    003B0 EA8B      LDI	R24,0xAB
+    003B1 E090      LDI	R25,0
+    003B2 8399      STD	Y+1,R25
+    003B3 8388      ST	Y,R24
+    003B4 E021      LDI	R18,1
+    003B5 E00D      LDI	R16,0xD
+    003B6 DD78      RCALL	_Write_Data_String
+(0351)    Write_Data_Byte(jianshu_jilu[num][xuhao]+0x30); //ÏÔÊ¾µ¥¸ö×Ö·û 
+    003B7 9110 0102 LDS	R17,num
+    003B9 E006      LDI	R16,6
+    003BA 0301      MULSU	R16,R17
+    003BB 0110      MOVW	R2,R0
+    003BC EB8D      LDI	R24,0xBD
+    003BD E090      LDI	R25,0
+    003BE 0E28      ADD	R2,R24
+    003BF 1E39      ADC	R3,R25
+    003C0 91E0 0105 LDS	R30,xuhao
+    003C2 27FF      CLR	R31
+    003C3 0DE2      ADD	R30,R2
+    003C4 1DF3      ADC	R31,R3
+    003C5 8100      LD	R16,Z
+    003C6 5D00      SUBI	R16,0xD0
+    003C7 DD12      RCALL	_Write_Data_Byte
+(0352) 	 
+(0353) 	 
+(0354)   Write_Place_xy(5,1);
+    003C8 E021      LDI	R18,1
+    003C9 E005      LDI	R16,5
+    003CA DD55      RCALL	_Write_Place_xy
+(0355)   Write_Data_Byte(jiner_jilu[num]/1000+0x30); //ÏÔÊ¾µ¥¸ö×Ö·û
+    003CB EB87      LDI	R24,0xB7
+    003CC E090      LDI	R25,0
+    003CD 91E0 0102 LDS	R30,num
+    003CF 27FF      CLR	R31
+    003D0 0FEE      LSL	R30
+    003D1 1FFF      ROL	R31
+    003D2 0FE8      ADD	R30,R24
+    003D3 1FF9      ADC	R31,R25
+    003D4 8100      LD	R16,Z
+    003D5 8111      LDD	R17,Z+1
+    003D6 EE28      LDI	R18,0xE8
+    003D7 E033      LDI	R19,3
+    003D8 940E 050A CALL	div16u
+    003DA 5D00      SUBI	R16,0xD0
+    003DB 4F1F      SBCI	R17,0xFF
+    003DC DCFD      RCALL	_Write_Data_Byte
+(0356)   Write_Data_Byte(jiner_jilu[num]/100%10+0x30); //ÏÔÊ¾µ¥¸ö×Ö·û
+    003DD EB87      LDI	R24,0xB7
+    003DE E090      LDI	R25,0
+    003DF 91E0 0102 LDS	R30,num
+    003E1 27FF      CLR	R31
+    003E2 0FEE      LSL	R30
+    003E3 1FFF      ROL	R31
+    003E4 0FE8      ADD	R30,R24
+    003E5 1FF9      ADC	R31,R25
+    003E6 8100      LD	R16,Z
+    003E7 8111      LDD	R17,Z+1
+    003E8 E624      LDI	R18,0x64
+    003E9 E030      LDI	R19,0
+    003EA 940E 050A CALL	div16u
+    003EC E02A      LDI	R18,0xA
+    003ED E030      LDI	R19,0
+    003EE 940E 0508 CALL	mod16u
+    003F0 5D00      SUBI	R16,0xD0
+    003F1 4F1F      SBCI	R17,0xFF
+    003F2 DCE7      RCALL	_Write_Data_Byte
+(0357)   Write_Data_Byte(jiner_jilu[num]/10%10+0x30); //ÏÔÊ¾µ¥¸ö×Ö·û
+    003F3 EB87      LDI	R24,0xB7
+    003F4 E090      LDI	R25,0
+    003F5 91E0 0102 LDS	R30,num
+    003F7 27FF      CLR	R31
+    003F8 0FEE      LSL	R30
+    003F9 1FFF      ROL	R31
+    003FA 0FE8      ADD	R30,R24
+    003FB 1FF9      ADC	R31,R25
+    003FC 8100      LD	R16,Z
+    003FD 8111      LDD	R17,Z+1
+    003FE E02A      LDI	R18,0xA
+    003FF E030      LDI	R19,0
+    00400 940E 050A CALL	div16u
+    00402 E02A      LDI	R18,0xA
+    00403 E030      LDI	R19,0
+    00404 940E 0508 CALL	mod16u
+    00406 5D00      SUBI	R16,0xD0
+    00407 4F1F      SBCI	R17,0xFF
+    00408 DCD1      RCALL	_Write_Data_Byte
+(0358)   Write_Data_Byte(jiner_jilu[num]%10+0x30); //ÏÔÊ¾µ¥¸ö×Ö·û
+    00409 EB87      LDI	R24,0xB7
+    0040A E090      LDI	R25,0
+    0040B 91E0 0102 LDS	R30,num
+    0040D 27FF      CLR	R31
+    0040E 0FEE      LSL	R30
+    0040F 1FFF      ROL	R31
+    00410 0FE8      ADD	R30,R24
+    00411 1FF9      ADC	R31,R25
+    00412 8100      LD	R16,Z
+    00413 8111      LDD	R17,Z+1
+    00414 E02A      LDI	R18,0xA
+    00415 E030      LDI	R19,0
+    00416 940E 0508 CALL	mod16u
+    00418 5D00      SUBI	R16,0xD0
+    00419 4F1F      SBCI	R17,0xFF
+    0041A DCBF      RCALL	_Write_Data_Byte
+    0041B CD7F      RJMP	0x019B
+    0041C 9622      ADIW	R28,2
+    0041D 9508      RET
+_uart0_rx_isr:
+  i                    --> Y,+1
+  temp                 --> R16
+    0041E 922A      ST	-Y,R2
+    0041F 923A      ST	-Y,R3
+    00420 930A      ST	-Y,R16
+    00421 938A      ST	-Y,R24
+    00422 939A      ST	-Y,R25
+    00423 93EA      ST	-Y,R30
+    00424 93FA      ST	-Y,R31
+    00425 B62F      IN	R2,0x3F
+    00426 922A      ST	-Y,R2
+(0359) 	 
+(0360)  } 
+(0361) } 
+(0362) #pragma interrupt_handler uart0_rx_isr:12
+(0363) void uart0_rx_isr(void)
+(0364) {
+(0365) uchar i;
+(0366) uchar temp;
+(0367)  //uart has received a character in UDR
+(0368)  //UCSRB&=~BIT(RXCIE); //¹Ø±Õ½ÓÊÕÖÐ¶Ï 
+(0369)  com_in_buf[count++]=UDR;//
+    00427 9020 00CF LDS	R2,count
+    00429 2433      CLR	R3
+    0042A 2D82      MOV	R24,R2
+    0042B 5F8F      SUBI	R24,0xFF
+    0042C 9380 00CF STS	count,R24
+    0042E ED80      LDI	R24,0xD0
+    0042F E090      LDI	R25,0
+    00430 2DE2      MOV	R30,R2
+    00431 27FF      CLR	R31
+    00432 0FE8      ADD	R30,R24
+    00433 1FF9      ADC	R31,R25
+    00434 B02C      IN	R2,0x0C
+    00435 8220      ST	Z,R2
+(0370)  if((com_in_buf[count-2]==0x0d)&&(com_in_buf[count-1]==0x0a))//½ÓÊÜÊÕµ½½øÐÐ½âÂë
+    00436 9020 00CF LDS	R2,count
+    00438 EC8E      LDI	R24,0xCE
+    00439 E090      LDI	R25,0
+    0043A 2DE2      MOV	R30,R2
+    0043B 27FF      CLR	R31
+    0043C 0FE8      ADD	R30,R24
+    0043D 1FF9      ADC	R31,R25
+    0043E 8180      LD	R24,Z
+    0043F 308D      CPI	R24,0xD
+    00440 F009      BEQ	0x0442
+    00441 C0B0      RJMP	0x04F2
+    00442 EC8F      LDI	R24,0xCF
+    00443 E090      LDI	R25,0
+    00444 2DE2      MOV	R30,R2
+    00445 27FF      CLR	R31
+    00446 0FE8      ADD	R30,R24
+    00447 1FF9      ADC	R31,R25
+    00448 8180      LD	R24,Z
+    00449 308A      CPI	R24,0xA
+    0044A F009      BEQ	0x044C
+    0044B C0A6      RJMP	0x04F2
+(0371)  {
+(0372)  //S000000000000000000
+(0373) 
+(0374)    if(com_in_buf[count-21]=='S')
+    0044C EB8B      LDI	R24,0xBB
+    0044D E090      LDI	R25,0
+    0044E 2DE2      MOV	R30,R2
+    0044F 27FF      CLR	R31
+    00450 0FE8      ADD	R30,R24
+    00451 1FF9      ADC	R31,R25
+    00452 8180      LD	R24,Z
+    00453 3583      CPI	R24,0x53
+    00454 F009      BEQ	0x0456
+    00455 C099      RJMP	0x04EF
+(0375)    {
+(0376) 	temp=com_in_buf[count-20]-0x30;
+    00456 EB8C      LDI	R24,0xBC
+    00457 E090      LDI	R25,0
+    00458 2DE2      MOV	R30,R2
+    00459 27FF      CLR	R31
+    0045A 0FE8      ADD	R30,R24
+    0045B 1FF9      ADC	R31,R25
+    0045C 8100      LD	R16,Z
+    0045D 5300      SUBI	R16,0x30
+(0377)     jianshu_jilu[0][0]=temp;
+    0045E 9300 00BD STS	jianshu_jilu,R16
+(0378) 	temp=com_in_buf[count-19]-0x30;
+    00460 EB8D      LDI	R24,0xBD
+    00461 E090      LDI	R25,0
+    00462 2DE2      MOV	R30,R2
+    00463 27FF      CLR	R31
+    00464 0FE8      ADD	R30,R24
+    00465 1FF9      ADC	R31,R25
+    00466 8100      LD	R16,Z
+    00467 5300      SUBI	R16,0x30
+(0379)     jianshu_jilu[0][1]=temp;
+    00468 9300 00BE STS	jianshu_jilu+1,R16
+(0380) 	temp=com_in_buf[count-18]-0x30;
+    0046A EB8E      LDI	R24,0xBE
+    0046B E090      LDI	R25,0
+    0046C 2DE2      MOV	R30,R2
+    0046D 27FF      CLR	R31
+    0046E 0FE8      ADD	R30,R24
+    0046F 1FF9      ADC	R31,R25
+    00470 8100      LD	R16,Z
+    00471 5300      SUBI	R16,0x30
+(0381)     jianshu_jilu[0][2]=temp;
+    00472 9300 00BF STS	jianshu_jilu+2,R16
+(0382) 	temp=com_in_buf[count-17]-0x30;
+    00474 EB8F      LDI	R24,0xBF
+    00475 E090      LDI	R25,0
+    00476 2DE2      MOV	R30,R2
+    00477 27FF      CLR	R31
+    00478 0FE8      ADD	R30,R24
+    00479 1FF9      ADC	R31,R25
+    0047A 8100      LD	R16,Z
+    0047B 5300      SUBI	R16,0x30
+(0383)     jianshu_jilu[0][3]=temp;
+    0047C 9300 00C0 STS	jianshu_jilu+3,R16
+(0384) 	temp=com_in_buf[count-16]-0x30;
+    0047E EC80      LDI	R24,0xC0
+    0047F E090      LDI	R25,0
+    00480 2DE2      MOV	R30,R2
+    00481 27FF      CLR	R31
+    00482 0FE8      ADD	R30,R24
+    00483 1FF9      ADC	R31,R25
+    00484 8100      LD	R16,Z
+    00485 5300      SUBI	R16,0x30
+(0385)     jianshu_jilu[0][4]=temp;
+    00486 9300 00C1 STS	jianshu_jilu+4,R16
+(0386) 	 //temp=com_in_buf[count-15]-0x30;
+(0387)     //jianshu_jilu[0][5]=temp;
+(0388) 	
+(0389) 	
+(0390)     temp=com_in_buf[count-14]-0x30;
+    00488 EC82      LDI	R24,0xC2
+    00489 E090      LDI	R25,0
+    0048A 2DE2      MOV	R30,R2
+    0048B 27FF      CLR	R31
+    0048C 0FE8      ADD	R30,R24
+    0048D 1FF9      ADC	R31,R25
+    0048E 8100      LD	R16,Z
+    0048F 5300      SUBI	R16,0x30
+(0391)     jianshu_jilu[1][0]=temp;
+    00490 9300 00C3 STS	jianshu_jilu+6,R16
+(0392) 	temp=com_in_buf[count-13]-0x30;
+    00492 EC83      LDI	R24,0xC3
+    00493 E090      LDI	R25,0
+    00494 2DE2      MOV	R30,R2
+    00495 27FF      CLR	R31
+    00496 0FE8      ADD	R30,R24
+    00497 1FF9      ADC	R31,R25
+    00498 8100      LD	R16,Z
+    00499 5300      SUBI	R16,0x30
+(0393)     jianshu_jilu[1][1]=temp;
+    0049A 9300 00C4 STS	jianshu_jilu+7,R16
+(0394) 	temp=com_in_buf[count-12]-0x30;
+    0049C EC84      LDI	R24,0xC4
+    0049D E090      LDI	R25,0
+    0049E 2DE2      MOV	R30,R2
+    0049F 27FF      CLR	R31
+    004A0 0FE8      ADD	R30,R24
+    004A1 1FF9      ADC	R31,R25
+    004A2 8100      LD	R16,Z
+    004A3 5300      SUBI	R16,0x30
+(0395)     jianshu_jilu[1][2]=temp;
+    004A4 9300 00C5 STS	jianshu_jilu+8,R16
+(0396) 	temp=com_in_buf[count-11]-0x30;
+    004A6 EC85      LDI	R24,0xC5
+    004A7 E090      LDI	R25,0
+    004A8 2DE2      MOV	R30,R2
+    004A9 27FF      CLR	R31
+    004AA 0FE8      ADD	R30,R24
+    004AB 1FF9      ADC	R31,R25
+    004AC 8100      LD	R16,Z
+    004AD 5300      SUBI	R16,0x30
+(0397)     jianshu_jilu[1][3]=temp;
+    004AE 9300 00C6 STS	jianshu_jilu+9,R16
+(0398) 	temp=com_in_buf[count-10]-0x30;
+    004B0 EC86      LDI	R24,0xC6
+    004B1 E090      LDI	R25,0
+    004B2 2DE2      MOV	R30,R2
+    004B3 27FF      CLR	R31
+    004B4 0FE8      ADD	R30,R24
+    004B5 1FF9      ADC	R31,R25
+    004B6 8100      LD	R16,Z
+    004B7 5300      SUBI	R16,0x30
+(0399)     jianshu_jilu[1][4]=temp;
+    004B8 9300 00C7 STS	jianshu_jilu+10,R16
+(0400) 	//temp=com_in_buf[count-9]-0x30;
+(0401)     //jianshu_jilu[1][5]=temp;
+(0402) 	
+(0403) 	
+(0404)     temp=com_in_buf[count-8]-0x30;
+    004BA EC88      LDI	R24,0xC8
+    004BB E090      LDI	R25,0
+    004BC 2DE2      MOV	R30,R2
+    004BD 27FF      CLR	R31
+    004BE 0FE8      ADD	R30,R24
+    004BF 1FF9      ADC	R31,R25
+    004C0 8100      LD	R16,Z
+    004C1 5300      SUBI	R16,0x30
+(0405)     jianshu_jilu[2][0]=temp;
+    004C2 9300 00C9 STS	jianshu_jilu+12,R16
+(0406) 	temp=com_in_buf[count-7]-0x30;
+    004C4 EC89      LDI	R24,0xC9
+    004C5 E090      LDI	R25,0
+    004C6 2DE2      MOV	R30,R2
+    004C7 27FF      CLR	R31
+    004C8 0FE8      ADD	R30,R24
+    004C9 1FF9      ADC	R31,R25
+    004CA 8100      LD	R16,Z
+    004CB 5300      SUBI	R16,0x30
+(0407)     jianshu_jilu[2][1]=temp;
+    004CC 9300 00CA STS	jianshu_jilu+13,R16
+(0408) 	temp=com_in_buf[count-6]-0x30;
+    004CE EC8A      LDI	R24,0xCA
+    004CF E090      LDI	R25,0
+    004D0 2DE2      MOV	R30,R2
+    004D1 27FF      CLR	R31
+    004D2 0FE8      ADD	R30,R24
+    004D3 1FF9      ADC	R31,R25
+    004D4 8100      LD	R16,Z
+    004D5 5300      SUBI	R16,0x30
+(0409)     jianshu_jilu[2][2]=temp;
+    004D6 9300 00CB STS	jianshu_jilu+14,R16
+(0410) 	temp=com_in_buf[count-5]-0x30;
+    004D8 EC8B      LDI	R24,0xCB
+    004D9 E090      LDI	R25,0
+    004DA 2DE2      MOV	R30,R2
+    004DB 27FF      CLR	R31
+    004DC 0FE8      ADD	R30,R24
+    004DD 1FF9      ADC	R31,R25
+    004DE 8100      LD	R16,Z
+    004DF 5300      SUBI	R16,0x30
+(0411)     jianshu_jilu[2][3]=temp;
+    004E0 9300 00CC STS	jianshu_jilu+15,R16
+(0412) 	temp=com_in_buf[count-4]-0x30;
+    004E2 EC8C      LDI	R24,0xCC
+    004E3 E090      LDI	R25,0
+    004E4 2DE2      MOV	R30,R2
+    004E5 27FF      CLR	R31
+    004E6 0FE8      ADD	R30,R24
+    004E7 1FF9      ADC	R31,R25
+    004E8 8100      LD	R16,Z
+    004E9 5300      SUBI	R16,0x30
+(0413)     jianshu_jilu[2][4]=temp;
+    004EA 9300 00CD STS	jianshu_jilu+16,R16
+(0414) 	// temp=com_in_buf[count-3]-0x30;
+(0415)     //jianshu_jilu[2][5]=temp;
+(0416)     ok=1;
+    004EC E081      LDI	R24,1
+    004ED 9380 0103 STS	ok,R24
+(0417)    }
+(0418)    
+(0419)    
+(0420)    
+(0421) 	count=0;
+    004EF 2422      CLR	R2
+    004F0 9220 00CF STS	count,R2
+(0422)  }
+FILE: <library>
+    004F2 9029      LD	R2,Y+
+    004F3 BE2F      OUT	0x3F,R2
+    004F4 91F9      LD	R31,Y+
+    004F5 91E9      LD	R30,Y+
+    004F6 9199      LD	R25,Y+
+    004F7 9189      LD	R24,Y+
+    004F8 9109      LD	R16,Y+
+    004F9 9039      LD	R3,Y+
+    004FA 9029      LD	R2,Y+
+    004FB 9518      RETI
+_strlen:
+    004FC 2FE0      MOV	R30,R16
+    004FD 2FF1      MOV	R31,R17
+    004FE 27AA      CLR	R26
+    004FF 27BB      CLR	R27
+    00500 9001      LD	R0,Z+
+    00501 2000      TST	R0
+    00502 F011      BEQ	0x0505
+    00503 9611      ADIW	R26,1
+    00504 CFFB      RJMP	0x0500
+    00505 2F0A      MOV	R16,R26
+    00506 2F1B      MOV	R17,R27
+    00507 9508      RET
+mod16u:
+    00508 9468      BSET	6
+    00509 C001      RJMP	xdiv16u
+div16u:
+    0050A 94E8      BCLR	6
+xdiv16u:
+    0050B 92EA      ST	-Y,R14
+    0050C 92FA      ST	-Y,R15
+    0050D 938A      ST	-Y,R24
+    0050E 24EE      CLR	R14
+    0050F 24FF      CLR	R15
+    00510 E180      LDI	R24,0x10
+    00511 0F00      LSL	R16
+    00512 1F11      ROL	R17
+    00513 1CEE      ROL	R14
+    00514 1CFF      ROL	R15
+    00515 16E2      CP	R14,R18
+    00516 06F3      CPC	R15,R19
+    00517 F018      BCS	0x051B
+    00518 1AE2      SUB	R14,R18
+    00519 0AF3      SBC	R15,R19
+    0051A 9503      INC	R16
+    0051B 958A      DEC	R24
+    0051C F7A1      BNE	0x0511
+    0051D F416      BRTC	0x0520
+    0051E 2D0E      MOV	R16,R14
+    0051F 2D1F      MOV	R17,R15
+    00520 9189      LD	R24,Y+
+    00521 90F9      LD	R15,Y+
+    00522 90E9      LD	R14,Y+
+    00523 9508      RET
+mod8u:
+    00524 9468      BSET	6
+    00525 C001      RJMP	xdiv8u
+div8u:
+    00526 94E8      BCLR	6
+xdiv8u:
+    00527 932A      ST	-Y,R18
+    00528 92FA      ST	-Y,R15
+    00529 92EA      ST	-Y,R14
+    0052A 24FF      CLR	R15
+    0052B 24EE      CLR	R14
+    0052C E120      LDI	R18,0x10
+    0052D 0F00      LSL	R16
+    0052E 1CFF      ROL	R15
+    0052F 1CEE      ROL	R14
+    00530 16E1      CP	R14,R17
+    00531 F010      BCS	0x0534
+    00532 1AE1      SUB	R14,R17
+    00533 9503      INC	R16
+    00534 952A      DEC	R18
+    00535 F7B9      BNE	0x052D
+    00536 F40E      BRTC	0x0538
+    00537 2D0E      MOV	R16,R14
+    00538 90E9      LD	R14,Y+
+    00539 90F9      LD	R15,Y+
+    0053A 9129      LD	R18,Y+
+    0053B 9508      RET
+pop_xgset00FC:
+    0053C 90A9      LD	R10,Y+
+    0053D 90B9      LD	R11,Y+
+    0053E 90C9      LD	R12,Y+
+    0053F 90D9      LD	R13,Y+
+    00540 90E9      LD	R14,Y+
+    00541 90F9      LD	R15,Y+
+    00542 9508      RET
+push_xgsetF0FC:
+    00543 937A      ST	-Y,R23
+    00544 936A      ST	-Y,R22
+push_xgset30FC:
+    00545 935A      ST	-Y,R21
+    00546 934A      ST	-Y,R20
+push_xgset00FC:
+    00547 92FA      ST	-Y,R15
+    00548 92EA      ST	-Y,R14
+push_xgset003C:
+    00549 92DA      ST	-Y,R13
+    0054A 92CA      ST	-Y,R12
+    0054B 92BA      ST	-Y,R11
+    0054C 92AA      ST	-Y,R10
+    0054D 9508      RET
+push_xgsetF00C:
+    0054E 937A      ST	-Y,R23
+    0054F 936A      ST	-Y,R22
+    00550 935A      ST	-Y,R21
+    00551 934A      ST	-Y,R20
+    00552 92BA      ST	-Y,R11
+    00553 92AA      ST	-Y,R10
+    00554 9508      RET
+pop_xgsetF00C:
+    00555 90A9      LD	R10,Y+
+    00556 90B9      LD	R11,Y+
+    00557 9149      LD	R20,Y+
+    00558 9159      LD	R21,Y+
+    00559 9169      LD	R22,Y+
+    0055A 9179      LD	R23,Y+
+    0055B 9508      RET
+push_xgset303C:
+    0055C 935A      ST	-Y,R21
+    0055D 934A      ST	-Y,R20
+    0055E 92DA      ST	-Y,R13
+    0055F 92CA      ST	-Y,R12
+    00560 92BA      ST	-Y,R11
+    00561 92AA      ST	-Y,R10
+    00562 9508      RET
+pop_xgset303C:
+    00563 90A9      LD	R10,Y+
+    00564 90B9      LD	R11,Y+
+    00565 90C9      LD	R12,Y+
+    00566 90D9      LD	R13,Y+
+    00567 9149      LD	R20,Y+
+    00568 9159      LD	R21,Y+
+    00569 9508      RET

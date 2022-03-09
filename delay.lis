@@ -1,0 +1,141 @@
+                        .module delay.c
+                        .area text(rom, con, rel)
+ 0000                   .dbfile ..\M16_~02V\delay.c
+ 0000                   .dbfile \\Mac\Home\Downloads\M16_~02V\delay.c
+ 0000                   .dbfunc e delay_us _delay_us fV
+ 0000           ;              t -> R16
+                        .even
+ 0000           _delay_us::
+ 0000                   .dbline -1
+ 0000                   .dbline 13
+ 0000           ; 
+ 0000           ; /*     AVR系统的处理器为：   ATMega16               */
+ 0000           ; /*     AVR系统的晶振频率：   8.0000 Mhz             */
+ 0000           ; /*--------------------------------------------------*/
+ 0000           ; 
+ 0000           ; #include <iom16v.h> 
+ 0000           ; #include "delay.h"
+ 0000           ; 
+ 0000           ; /*-----------------------------------------------------------------------
+ 0000           ; delay_us         :1us延时函数
+ 0000           ; -----------------------------------------------------------------------*/
+ 0000           ; void delay_us(void)
+ 0000           ; {
+ 0000                   .dbline 14
+ 0000           ;    unsigned char t=2;
+ 0000 02E0              ldi R16,2
+ 0002                   .dbline 15
+ 0002           ;    t--;
+ 0002 0A95              dec R16
+ 0004                   .dbline -2
+ 0004           L1:
+ 0004                   .dbline 0 ; func end
+ 0004 0895              ret
+ 0006                   .dbsym r t 16 c
+ 0006                   .dbend
+ 0006                   .dbfunc e delay_nus _delay_nus fV
+ 0006           ;              t -> R20,R21
+                        .even
+ 0006           _delay_nus::
+ 0006 4A93              st -y,R20
+ 0008 5A93              st -y,R21
+ 000A A801              movw R20,R16
+ 000C                   .dbline -1
+ 000C                   .dbline 24
+ 000C           ; }
+ 000C           ; 
+ 000C           ; /*-----------------------------------------------------------------------
+ 000C           ; delay_nus          :长延时函数
+ 000C           ; 
+ 000C           ; 输入参数: t        :延时时间 us
+ 000C           ; -----------------------------------------------------------------------*/
+ 000C           ; void delay_nus(unsigned int t)
+ 000C           ; {
+ 000C 01C0              xjmp L4
+ 000E           L3:
+ 000E                   .dbline 26
+ 000E           ;     while (t--)
+ 000E           ;        delay_us();
+ 000E F8DF              xcall _delay_us
+ 0010           L4:
+ 0010                   .dbline 25
+ 0010 1A01              movw R2,R20
+ 0012 4150              subi R20,1
+ 0014 5040              sbci R21,0
+ 0016 2220              tst R2
+ 0018 D1F7              brne L3
+ 001A 3320              tst R3
+ 001C C1F7              brne L3
+ 001E           X0:
+ 001E                   .dbline -2
+ 001E           L2:
+ 001E                   .dbline 0 ; func end
+ 001E 5991              ld R21,y+
+ 0020 4991              ld R20,y+
+ 0022 0895              ret
+ 0024                   .dbsym r t 20 i
+ 0024                   .dbend
+ 0024                   .dbfunc e delay_ms _delay_ms fV
+                        .even
+ 0024           _delay_ms::
+ 0024                   .dbline -1
+ 0024                   .dbline 33
+ 0024           ; }
+ 0024           ; 
+ 0024           ; /*-----------------------------------------------------------------------
+ 0024           ; delay_ms         :1ms延时函数
+ 0024           ; -----------------------------------------------------------------------*/
+ 0024           ; void delay_ms(void)
+ 0024           ; {
+ 0024                   .dbline 34
+ 0024           ;    delay_nus(500);
+ 0024 04EF              ldi R16,500
+ 0026 11E0              ldi R17,1
+ 0028                   .dbline -2
+ 0028           L6:
+ 0028                   .dbline 0 ; func end
+ 0028 EECF              xjmp _delay_nus
+ 002A                   .dbend
+ 002A                   .dbfunc e delay_nms _delay_nms fV
+ 002A           ;              t -> R20,R21
+                        .even
+ 002A           _delay_nms::
+ 002A 4A93              st -y,R20
+ 002C 5A93              st -y,R21
+ 002E A801              movw R20,R16
+ 0030                   .dbline -1
+ 0030                   .dbline 43
+ 0030           ; }
+ 0030           ; 
+ 0030           ; /*-----------------------------------------------------------------------
+ 0030           ; delay_nms          :长延时函数
+ 0030           ; 
+ 0030           ; 输入参数: t        :延时时间 ms
+ 0030           ; -----------------------------------------------------------------------*/
+ 0030           ; void delay_nms(unsigned int t)
+ 0030           ; {
+ 0030 01C0              xjmp L9
+ 0032           L8:
+ 0032                   .dbline 45
+ 0032           ;     while (t--)
+ 0032           ;        delay_ms();
+ 0032 F8DF              xcall _delay_ms
+ 0034           L9:
+ 0034                   .dbline 44
+ 0034 1A01              movw R2,R20
+ 0036 4150              subi R20,1
+ 0038 5040              sbci R21,0
+ 003A 2220              tst R2
+ 003C D1F7              brne L8
+ 003E 3320              tst R3
+ 0040 C1F7              brne L8
+ 0042           X1:
+ 0042                   .dbline -2
+ 0042           L7:
+ 0042                   .dbline 0 ; func end
+ 0042 5991              ld R21,y+
+ 0044 4991              ld R20,y+
+ 0046 0895              ret
+ 0048                   .dbsym r t 20 i
+ 0048                   .dbend
+ 0048           ; }

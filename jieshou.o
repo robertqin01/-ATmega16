@@ -1,0 +1,267 @@
+XL
+H 5 areas 13 global symbols
+M jieshou.C
+S _delay_nms Ref0000
+A text size 202 flags 0
+dbfile jieshou.C
+dbfile J:\AVRCHENGXU\2017-5月份\M16双机串口通信\uart.h
+dbfunc e uart0_init 0 fV
+dbline FFFFFFFF 0
+dbline 9 0
+dbline A 0
+dbline B 4
+dbline C 6
+dbline D A
+dbline 10 E
+dbline 11 10
+dbline FFFFFFFE 14
+dbline 0 14
+dbfunc e send_data 16 fV
+dbsym r back 10 c
+dbline FFFFFFFF 16
+dbline 16 16
+dbline 17 16
+dbline 17 16
+dbline 18 1A
+dbline FFFFFFFE 1C
+dbline 0 1C
+dbfile J:\AVRCHENGXU\2017-5月份\M16双机串口通信\jieshou.C
+dbfunc e send_dat 1E fV
+dbsym l addr 1 c
+dbsym l ch 0 c
+dbline FFFFFFFF 22
+dbline 39 22
+dbline 3D 22
+dbline 3E 28
+dbline 41 2E
+dbline 42 34
+dbline 43 3A
+dbline 44 40
+dbline 45 46
+dbline 46 52
+dbline FFFFFFFE 60
+dbline 0 60
+dbfunc e Send_595 64 fV
+dbsym r i 14 c
+dbsym r dat 10 c
+dbline FFFFFFFF 66
+dbline 4C 66
+dbline 4E 66
+dbline 4F 6A
+dbline 50 6A
+dbline 51 6C
+dbline 51 70
+dbline 52 74
+dbline 53 76
+dbline 54 78
+dbline 55 7A
+dbline 56 7C
+dbline 4E 7C
+dbline 4E 7E
+dbline FFFFFFFE 82
+dbline 0 82
+dbfunc e temptoseg 86 fV
+dbline FFFFFFFF 86
+dbline 5C 86
+dbline 5D 86
+dbline 5E 9A
+dbline 5F AA
+dbline 60 BA
+dbline 63 CA
+dbline 64 D0
+dbline 65 D2
+dbline 66 D4
+dbline 67 D6
+dbline 67 DE
+dbline 68 E0
+dbline 69 E6
+dbline 6A E8
+dbline 6B EA
+dbline 6C EC
+dbline 6C F4
+dbline 6D F6
+dbline 6E FC
+dbline 6F FE
+dbline 70 100
+dbline 71 102
+dbline 71 10A
+dbline 72 10C
+dbline 73 112
+dbline 74 114
+dbline 75 116
+dbline 76 118
+dbline 76 120
+dbline FFFFFFFE 122
+dbline 0 122
+dbfunc e uart0_rx_isr 124 fV
+dbsym l i 1 c
+dbline FFFFFFFF 134
+dbline 7F 134
+dbline 82 134
+dbline 83 136
+dbline 84 154
+dbline 85 17E
+dbline 86 17E
+dbline 87 190
+dbline 88 1A4
+dbline 89 1B8
+dbline 8B 1CC
+dbline 8C 1D2
+dbline 8D 1D2
+dbline FFFFFFFE 1D4
+dbline 0 1D4
+dbfunc e main 1E6 fV
+dbsym l keynum 1 c
+dbline FFFFFFFF 1E6
+dbline 92 1E6
+dbline 9B 1E6
+dbline 9F 1E8
+dbline A0 1EC
+dbline A4 1EE
+dbline A5 1F2
+dbline A7 1F6
+dbline A8 1F8
+dbline AB 1FC
+dbline AE 1FC
+dbline AF 1FE
+dbline AA 1FE
+dbline FFFFFFFE 200
+dbline 0 200
+S _send_data Def0016
+S _main Def01E6
+S _temptoseg Def0086
+S _uart0_rx_isr Def0124
+S _uart0_init Def0000
+S _send_dat Def001E
+S _Send_595 Def0064
+A data size 10 flags 20
+dbfile J:\AVRCHENGXU\2017-5月份\M16双机串口通信\uart.h
+dbfile J:\AVRCHENGXU\2017-5月份\M16双机串口通信\jieshou.C
+dbsym e ledcode 0 A[16:16]c
+S _ledcode Def0000
+A idata size 10 flags 0
+A vector size 30 flags C
+A bss size 42 flags 20
+dbfile J:\AVRCHENGXU\2017-5月份\M16双机串口通信\jieshou.C
+dbsym e display_data 0 A[4:4]c
+dbsym e count 4 c
+dbsym e com_in_buf 5 A[50:50]c
+dbsym e shu4 37 c
+dbsym e shu3 38 c
+dbsym e shu2 39 c
+dbsym e shu1 3A c
+dbsym e mode 3B c
+dbsym e crcdat 3C i
+dbsym e datbuf 3E A[4:4]c
+S _mode Def003B
+S _display_data Def0000
+S _com_in_buf Def0005
+S _count Def0004
+S _crcdat Def003C
+S _datbuf Def003E
+S _shu1 Def003A
+S _shu2 Def0039
+S _shu3 Def0038
+S _shu4 Def0037
+T 00 00 22 24 2A B8 2B B8 86 E8 80 BD 83 E3 89 B9
+R 00 00 00 00
+T 0E 00 20 BC 88 E9 8A B9 08 95
+R 00 00 00 00
+T 16 00 5D 9B FE CF 0C B9 08 95
+R 00 00 00 00
+T 00 00 C0 F9
+R 00 00 02 00
+T 02 00 A4 B0
+R 00 00 02 00
+T 04 00 99 92
+R 00 00 02 00
+T 06 00 82 F8
+R 00 00 02 00
+T 08 00 80 90
+R 00 00 02 00
+T 0A 00 88 83
+R 00 00 02 00
+T 0C 00 C6 A1
+R 00 00 02 00
+T 0E 00 86 8E
+R 00 00 02 00
+T 1E 00 1A 93 0A 93 8A EA 80 93 3E 00 85 E5 80 93
+R 00 00 00 00 00 0A 04 00
+T 2C 00 3F 00 00 91 3E 00 F1 DF 00 91 3F 00 EE DF
+R 00 00 00 00 00 02 04 00 00 06 04 00 00 0C 04 00
+T 3A 00 00 91 40 00 EB DF 00 91 41 00 E8 DF 00 91
+R 00 00 00 00 00 04 04 00 00 0A 04 00
+T 48 00 3C 00 10 91 3D 00 10 70 E2 DF 00 91 3C 00
+R 00 00 00 00 00 02 04 00 00 06 04 00 00 0E 04 00
+T 56 00 10 91 3D 00 01 2F 11 27 DB DF 22 96 08 95
+R 00 00 00 00 00 04 04 00
+T 64 00 4A 93 44 27 0A C0 C6 9A 07 FF 02 C0 C5 9A
+R 00 00 00 00
+T 72 00 01 C0 C5 98 C7 9A C7 98 00 0F 43 95 48 30
+R 00 00 00 00
+T 80 00 A0 F3 49 91 08 95
+R 00 00 00 00
+T 86 00 80 E0 90 E0 E0 91
+R 00 00 00 00 20 02 01 00 00 00 40 04 01 00 00 00
+T 8C 00 3A 00 FF 27 E8 0F F9 1F 20 80 20 92 00 00
+R 00 00 00 00 00 02 04 00 00 0E 04 00
+T 9A 00 E0 91 39 00 FF 27 E8 0F F9 1F 20 80 20 92
+R 00 00 00 00 00 04 04 00
+T A8 00 01 00 E0 91 38 00 FF 27 E8 0F F9 1F 20 80
+R 00 00 00 00 00 02 04 00 00 06 04 00
+T B6 00 20 92 02 00 E0 91 37 00 FF 27 E8 0F F9 1F
+R 00 00 00 00 00 04 04 00 00 08 04 00
+T C4 00 20 80 20 92 03 00 00 91 00 00 CA DF C4 98
+R 00 00 00 00 00 06 04 00 00 0A 04 00
+T D2 00 C4 9A C3 98 01 E0 10 E0 0E 94 00 00 C3 9A
+R 00 00 00 00 12 0C 00 00
+T E0 00 00 91 01 00 BF DF C4 98 C4 9A C2 98 01 E0
+R 00 00 00 00 00 04 04 00
+T EE 00 10 E0 0E 94 00 00 C2 9A 00 91 02 00 B4 DF
+R 00 00 00 00 12 06 00 00 00 0C 04 00
+T FC 00 C4 98 C4 9A C1 98 01 E0 10 E0 0E 94 00 00
+R 00 00 00 00 12 0E 00 00
+T 0A 01 C1 9A 00 91 03 00 A9 DF C4 98 C4 9A C0 98
+R 00 00 00 00 00 06 04 00
+T 18 01 01 E0 10 E0 0E 94 00 00 C0 9A 08 95
+R 00 00 00 00 12 08 00 00
+T 2C 00 0C 94 92 00
+R 00 00 03 00 10 04 00 00
+T 24 01 2A 92 3A 92 8A 93 9A 93 EA 93 FA 93 2F B6
+R 00 00 00 00
+T 32 01 2A 92 57 98 20 90 04 00 33 24 82 2D 8F 5F
+R 00 00 00 00 00 08 04 00
+T 40 01 80 93 04 00 80 E0
+R 00 00 00 00 00 04 04 00 20 06 04 00 05 00
+T 46 01 90 E0 E2 2D FF 27 E8 0F F9 1F 2C B0 20 82
+R 00 00 00 00 40 02 04 00 05 00
+T 54 01 20 90 04 00 80 E0
+R 00 00 00 00 00 04 04 00 20 06 04 00 03 00
+T 5A 01 90 E0 E2 2D FF 27 E8 0F F9 1F 80 81 8D 30
+R 00 00 00 00 40 02 04 00 03 00
+T 68 01 09 F0 33 C0 80 E0 90 E0 E2 2D FF 27 E8 0F
+R 00 00 00 00 20 06 04 00 04 00 40 08 04 00 04 00
+T 76 01 F9 1F 80 81 8A 30 51 F5 80 E0 90 E0 E2 2D
+R 00 00 00 00 20 0A 04 00 02 00 40 0C 04 00 02 00
+T 84 01 FF 27 E8 0F F9 1F 20 80 20 92 37 00 80 E0
+R 00 00 00 00 00 0C 04 00 20 0E 04 00 01 00
+T 92 01 90 E0 E0 91 04 00 FF 27 E8 0F F9 1F 20 80
+R 00 00 00 00 40 02 04 00 01 00 00 06 04 00
+T A0 01 20 92 38 00 80 E0
+R 00 00 00 00 00 04 04 00 20 06 04 00 00 00
+T A6 01 90 E0 E0 91 04 00 FF 27 E8 0F F9 1F 20 80
+R 00 00 00 00 40 02 04 00 00 00 00 06 04 00
+T B4 01 20 92 39 00 80 E0
+R 00 00 00 00 00 04 04 00 20 06 04 00 FF FF
+T BA 01 90 E0 E0 91 04 00 FF 27 E8 0F F9 1F 20 80
+R 00 00 00 00 40 02 04 00 FF FF 00 06 04 00
+T C8 01 20 92 3A 00 22 24 20 92 04 00 57 9A 29 90
+R 00 00 00 00 00 04 04 00 00 0A 04 00
+T D6 01 2F BE F9 91 E9 91 99 91 89 91 39 90 29 90
+R 00 00 00 00
+T E4 01 18 95
+R 00 00 00 00
+T E6 01 F8 94 8F EF 87 BB 88 BB 86 E0 81 BB 8F EF
+R 00 00 00 00
+T F4 01 82 BB 04 DF 78 94 01 C0 44 DF FE CF 08 95
+R 00 00 00 00

@@ -1,0 +1,2182 @@
+                        .module zhongduan.C
+                        .area text(rom, con, rel)
+ 0000                   .dbfile zhongduan.C
+ 0000                   .dbfile J:\1Zhongsheji_Bfen\2021年程序\2021-1月份\M16_HJ_2G双机串口电子点菜 系统\uart.h
+ 0000                   .dbfunc e uart0_init _uart0_init fV
+                        .even
+ 0000           _uart0_init::
+ 0000                   .dbline -1
+ 0000                   .dbline 9
+ 0000           ; //包含所需头文件
+ 0000           ; #include <iom16v.h> 
+ 0000           ; #include <macros.h>
+ 0000           ; 
+ 0000           ; //UART0 initialize
+ 0000           ; // desired baud rate: 9600
+ 0000           ; // actual: baud rate:9615 (0.2%)
+ 0000           ; void uart0_init(void)
+ 0000           ; {
+ 0000                   .dbline 10
+ 0000           ;  UCSRB = 0x00; //disable while setting baud rate
+ 0000 2224              clr R2
+ 0002 2AB8              out 0xa,R2
+ 0004                   .dbline 11
+ 0004           ;  UCSRA = 0x00;
+ 0004 2BB8              out 0xb,R2
+ 0006                   .dbline 12
+ 0006           ;  UCSRC = BIT(URSEL) | 0x06;
+ 0006 86E8              ldi R24,134
+ 0008 80BD              out 0x20,R24
+ 000A                   .dbline 13
+ 000A           ;  UBRRL = 0x33; //set baud rate lo
+ 000A 83E3              ldi R24,51
+ 000C 89B9              out 0x9,R24
+ 000E                   .dbline 14
+ 000E           ;  UBRRH = 0x00; //set baud rate hi
+ 000E 20BC              out 0x20,R2
+ 0010                   .dbline 15
+ 0010           ;  UCSRB = 0x98;//发送使能
+ 0010 88E9              ldi R24,152
+ 0012 8AB9              out 0xa,R24
+ 0014                   .dbline -2
+ 0014           L1:
+ 0014                   .dbline 0 ; func end
+ 0014 0895              ret
+ 0016                   .dbend
+ 0016                   .dbfunc e send_data _send_data fV
+ 0016           ;           back -> R16
+                        .even
+ 0016           _send_data::
+ 0016                   .dbline -1
+ 0016                   .dbline 20
+ 0016           ; }
+ 0016           ; 
+ 0016           ; 
+ 0016           ; void send_data(unsigned char back)
+ 0016           ; {
+ 0016           L3:
+ 0016                   .dbline 21
+ 0016           ;   while( !( UCSRA & (1<<UDRE)) ) ;
+ 0016           L4:
+ 0016                   .dbline 21
+ 0016 5D9B              sbis 0xb,5
+ 0018 FECF              rjmp L3
+ 001A           X0:
+ 001A                   .dbline 22
+ 001A           ;   UDR=back;
+ 001A 0CB9              out 0xc,R16
+ 001C                   .dbline -2
+ 001C           L2:
+ 001C                   .dbline 0 ; func end
+ 001C 0895              ret
+ 001E                   .dbsym r back 16 c
+ 001E                   .dbend
+                        .area data(ram, con, rel)
+ 0000                   .dbfile J:\1Zhongsheji_Bfen\2021年程序\2021-1月份\M16_HJ_2G双机串口电子点菜 系统\uart.h
+ 0000           _wupin::
+ 0000                   .blkb 2
+                        .area idata
+ 0000 0A0F              .byte 10,15
+                        .area data(ram, con, rel)
+ 0002                   .dbfile J:\1Zhongsheji_Bfen\2021年程序\2021-1月份\M16_HJ_2G双机串口电子点菜 系统\uart.h
+ 0002                   .blkb 2
+                        .area idata
+ 0002 1419              .byte 20,25
+                        .area data(ram, con, rel)
+ 0004                   .dbfile J:\1Zhongsheji_Bfen\2021年程序\2021-1月份\M16_HJ_2G双机串口电子点菜 系统\uart.h
+ 0004                   .blkb 2
+                        .area idata
+ 0004 1E23              .byte 30,35
+                        .area data(ram, con, rel)
+ 0006                   .dbfile J:\1Zhongsheji_Bfen\2021年程序\2021-1月份\M16_HJ_2G双机串口电子点菜 系统\uart.h
+ 0006                   .dbfile J:\1Zhongsheji_Bfen\2021年程序\2021-1月份\M16_HJ_2G双机串口电子点菜 系统\zhongduan.C
+ 0006                   .dbsym e wupin _wupin A[6:6]c
+ 0006           _jiaxianshi::
+ 0006                   .blkb 5
+                        .area idata
+ 0006 2430300000        .byte 36,48,48,0,0
+                        .area data(ram, con, rel)
+ 000B                   .dbfile J:\1Zhongsheji_Bfen\2021年程序\2021-1月份\M16_HJ_2G双机串口电子点菜 系统\zhongduan.C
+ 000B                   .dbsym e jiaxianshi _jiaxianshi A[5:5]c
+ 000B           _wupin_ming::
+ 000B                   .blkb 13
+                        .area idata
+ 000B 312E5475646F75736920200000        .byte 49,46,'T,'u,'d,'o,'u,'s,'i,32,32,0,0
+                        .area data(ram, con, rel)
+ 0018                   .dbfile J:\1Zhongsheji_Bfen\2021年程序\2021-1月份\M16_HJ_2G双机串口电子点菜 系统\zhongduan.C
+ 0018                   .blkb 13
+                        .area idata
+ 0018 322E48756967756F726F750000        .byte 50,46,'H,'u,'i,'g,'u,'o,'r,'o,'u,0,0
+                        .area data(ram, con, rel)
+ 0025                   .dbfile J:\1Zhongsheji_Bfen\2021年程序\2021-1月份\M16_HJ_2G双机串口电子点菜 系统\zhongduan.C
+ 0025                   .blkb 13
+                        .area idata
+ 0025 332E50696A6975796120200000        .byte 51,46,'P,'i,'j,'i,'u,'y,'a,32,32,0,0
+                        .area data(ram, con, rel)
+ 0032                   .dbfile J:\1Zhongsheji_Bfen\2021年程序\2021-1月份\M16_HJ_2G双机串口电子点菜 系统\zhongduan.C
+ 0032                   .blkb 13
+                        .area idata
+ 0032 342E5A68756A69616F20200000        .byte 52,46,'Z,'h,'u,'j,'i,'a,'o,32,32,0,0
+                        .area data(ram, con, rel)
+ 003F                   .dbfile J:\1Zhongsheji_Bfen\2021年程序\2021-1月份\M16_HJ_2G双机串口电子点菜 系统\zhongduan.C
+ 003F                   .blkb 13
+                        .area idata
+ 003F 352E51696E6763616920200000        .byte 53,46,'Q,'i,'n,'g,'c,'a,'i,32,32,0,0
+                        .area data(ram, con, rel)
+ 004C                   .dbfile J:\1Zhongsheji_Bfen\2021年程序\2021-1月份\M16_HJ_2G双机串口电子点菜 系统\zhongduan.C
+ 004C                   .blkb 13
+                        .area idata
+ 004C 362E48756F67756F6469200000        .byte 54,46,'H,'u,'o,'g,'u,'o,'d,'i,32,0,0
+                        .area data(ram, con, rel)
+ 0059                   .dbfile J:\1Zhongsheji_Bfen\2021年程序\2021-1月份\M16_HJ_2G双机串口电子点菜 系统\zhongduan.C
+ 0059                   .dbsym e wupin_ming _wupin_ming A[78:6:13]c
+                        .area text(rom, con, rel)
+ 001E                   .dbfile J:\1Zhongsheji_Bfen\2021年程序\2021-1月份\M16_HJ_2G双机串口电子点菜 系统\zhongduan.C
+ 001E                   .dbfunc e LCDPort_Init _LCDPort_Init fV
+                        .even
+ 001E           _LCDPort_Init::
+ 001E                   .dbline -1
+ 001E                   .dbline 65
+ 001E           ; #include <iom16v.h> 
+ 001E           ; #include <macros.h>   
+ 001E           ; 
+ 001E           ; #include <stdio.h>  
+ 001E           ; #include <stdlib.h>
+ 001E           ; 
+ 001E           ; #include "uart.h"//延时函数
+ 001E           ; #include "delay.h"//延时函数
+ 001E           ; #define uint  unsigned int 
+ 001E           ; #define uchar unsigned char
+ 001E           ; 
+ 001E           ; uchar  wupin[6]={10,15,20,25,30,35};
+ 001E           ; uchar  jianshu_jilu[3][6];
+ 001E           ; uint   jiner_jilu[3];
+ 001E           ; uchar jiaxianshi[5]="$00\0";
+ 001E           ; 
+ 001E           ; uchar  wupin_ming[6][13]={ 
+ 001E           ; "1.Tudousi  \0",//
+ 001E           ; "2.Huiguorou\0",
+ 001E           ; "3.Pijiuya  \0",
+ 001E           ; "4.Zhujiao  \0",
+ 001E           ; "5.Qingcai  \0",
+ 001E           ; "6.Huoguodi \0",
+ 001E           ; };
+ 001E           ; 
+ 001E           ; 
+ 001E           ; 
+ 001E           ; uchar xuhao;
+ 001E           ; uchar ok;
+ 001E           ; unsigned char com_in_buf[50];
+ 001E           ; unsigned char count;
+ 001E           ; char mode;
+ 001E           ; uchar jianshu;
+ 001E           ; uchar num;
+ 001E           ; //端口位定义1602 引脚相关控制
+ 001E           ; 
+ 001E           ; #define k1  ((PINC&0x01))
+ 001E           ; #define k2  ((PINC&0x02))
+ 001E           ; #define k3  ((PINC&0x04))
+ 001E           ; #define k4  ((PINC&0x08))
+ 001E           ; 
+ 001E           ; 
+ 001E           ; //端口位定义1602 引脚相关控制
+ 001E           ; #define EN_CLR    PORTD&= ~(1 << PD6) 
+ 001E           ; #define EN_SET    PORTD |= (1 << PD6) 
+ 001E           ; #define RW_CLR    PORTD &= ~(1 << PD5) 
+ 001E           ; #define RW_SET    PORTD|= (1 << PD5) 
+ 001E           ; #define RS_CLR    PORTD &= ~(1 << PD4) 
+ 001E           ; #define RS_SET    PORTD |= (1 << PD4) 
+ 001E           ; #define LCD_BUS   PORTB
+ 001E           ; 
+ 001E           ; 
+ 001E           ; 
+ 001E           ; 
+ 001E           ; //#define BZ_CLR    PORTD&= ~(1 << PD0) 
+ 001E           ; //#define BZ_SET    PORTD |= (1 << PD0) 
+ 001E           ; 
+ 001E           ; #define LCD_BUS_Direction_REG    DDRB
+ 001E           ; #define LCD_BUS_READ_DATA        PINB
+ 001E           ; #define LCD_ControlPort_SET      DDRD |=((1<<PD4) | (1<<PD5) | (1<<PD6))
+ 001E           ; #define LCD_ControlPort_CLR      PORTD &=~((1<<PD4) | (1<<PD5) | (1<<PD6))
+ 001E           ; 
+ 001E           ; //LCD端口初始化
+ 001E           ; void LCDPort_Init(void)
+ 001E           ; {    
+ 001E                   .dbline 66
+ 001E           ;    LCD_BUS = 0X00;
+ 001E 2224              clr R2
+ 0020 28BA              out 0x18,R2
+ 0022                   .dbline 67
+ 0022           ;        LCD_BUS_Direction_REG =0XFF;   //LCD数据端口设置为输出
+ 0022 8FEF              ldi R24,255
+ 0024 87BB              out 0x17,R24
+ 0026                   .dbline 68
+ 0026           ;        LCD_ControlPort_CLR;          //RW RW EN低电平
+ 0026 82B3              in R24,0x12
+ 0028 8F78              andi R24,143
+ 002A 82BB              out 0x12,R24
+ 002C                   .dbline 69
+ 002C           ;        LCD_ControlPort_SET;          //RS RW EN脚均设置为输出 
+ 002C 81B3              in R24,0x11
+ 002E 8067              ori R24,112
+ 0030 81BB              out 0x11,R24
+ 0032                   .dbline -2
+ 0032           L6:
+ 0032                   .dbline 0 ; func end
+ 0032 0895              ret
+ 0034                   .dbend
+ 0034                   .dbfunc e Write_Com _Write_Com fV
+ 0034           ;        LCD_Com -> R20
+                        .even
+ 0034           _Write_Com::
+ 0034 4A93              st -y,R20
+ 0036 402F              mov R20,R16
+ 0038                   .dbline -1
+ 0038                   .dbline 73
+ 0038           ; }
+ 0038           ; //LCD写指令
+ 0038           ; void Write_Com(unsigned char LCD_Com)
+ 0038           ; {
+ 0038                   .dbline 75
+ 0038           ;     // Check_Busy();
+ 0038           ;        RW_CLR; //RW=0,写命令
+ 0038 9598              cbi 0x12,5
+ 003A                   .dbline 76
+ 003A           ;        RS_CLR; //RS=0,写指令
+ 003A 9498              cbi 0x12,4
+ 003C                   .dbline 77
+ 003C           ;        EN_CLR;// E=0，下角  
+ 003C 9698              cbi 0x12,6
+ 003E                   .dbline 78
+ 003E           ;        LCD_BUS&=0x0f;
+ 003E 88B3              in R24,0x18
+ 0040 8F70              andi R24,15
+ 0042 88BB              out 0x18,R24
+ 0044                   .dbline 79
+ 0044           ;        LCD_BUS|=(LCD_Com&0xf0);    //数据送往数据端口? 
+ 0044 842F              mov R24,R20
+ 0046 807F              andi R24,240
+ 0048 28B2              in R2,0x18
+ 004A 282A              or R2,R24
+ 004C 28BA              out 0x18,R2
+ 004E                   .dbline 81
+ 004E           ;        //delay_nus(10);    //这个延时非常重要，结合时序图来理解，可以跟送数据顺序调换
+ 004E           ;        EN_SET; //E=1,写操作   
+ 004E 969A              sbi 0x12,6
+ 0050                   .dbline 82
+ 0050           ;        EN_CLR;// E=0，下角  
+ 0050 9698              cbi 0x12,6
+ 0052                   .dbline 85
+ 0052           ; 
+ 0052           ;        //while(1);
+ 0052           ;        LCD_BUS&=0x0f;
+ 0052 88B3              in R24,0x18
+ 0054 8F70              andi R24,15
+ 0056 88BB              out 0x18,R24
+ 0058                   .dbline 86
+ 0058           ;        LCD_BUS|=(LCD_Com<<4);    //数据送往数据端口? 
+ 0058 842F              mov R24,R20
+ 005A 8F70              andi R24,#0x0F
+ 005C 8295              swap R24
+ 005E 28B2              in R2,0x18
+ 0060 282A              or R2,R24
+ 0062 28BA              out 0x18,R2
+ 0064                   .dbline 87
+ 0064           ;        delay_nus(10);    //这个延时非常重要，结合时序图来理解，可以跟送数据顺序调换
+ 0064 0AE0              ldi R16,10
+ 0066 10E0              ldi R17,0
+ 0068 0E940000          xcall _delay_nus
+ 006C                   .dbline 88
+ 006C           ;        EN_SET; //E=1,写操作   
+ 006C 969A              sbi 0x12,6
+ 006E                   .dbline 89
+ 006E           ;        EN_CLR;// E=0，下角  
+ 006E 9698              cbi 0x12,6
+ 0070                   .dbline 90
+ 0070           ;        delay_nms(5); 
+ 0070 05E0              ldi R16,5
+ 0072 10E0              ldi R17,0
+ 0074 0E940000          xcall _delay_nms
+ 0078                   .dbline -2
+ 0078           L7:
+ 0078                   .dbline 0 ; func end
+ 0078 4991              ld R20,y+
+ 007A 0895              ret
+ 007C                   .dbsym r LCD_Com 20 c
+ 007C                   .dbend
+ 007C                   .dbfunc e Write_Data_Byte _Write_Data_Byte fV
+ 007C           ;       LCD_Data -> R20
+                        .even
+ 007C           _Write_Data_Byte::
+ 007C 4A93              st -y,R20
+ 007E 402F              mov R20,R16
+ 0080                   .dbline -1
+ 0080                   .dbline 95
+ 0080           ; }
+ 0080           ; 
+ 0080           ; //LCD写字节数据
+ 0080           ; void Write_Data_Byte(unsigned char LCD_Data)
+ 0080           ; {
+ 0080                   .dbline 97
+ 0080           ;     // Check_Busy();
+ 0080           ;      RW_CLR;//RW=0,写入
+ 0080 9598              cbi 0x12,5
+ 0082                   .dbline 98
+ 0082           ;      RS_SET; //RS=1,数据寄存器
+ 0082 949A              sbi 0x12,4
+ 0084                   .dbline 99
+ 0084           ;      EN_CLR;// E=0，下角   
+ 0084 9698              cbi 0x12,6
+ 0086                   .dbline 100
+ 0086           ;                LCD_BUS&=0x0f;
+ 0086 88B3              in R24,0x18
+ 0088 8F70              andi R24,15
+ 008A 88BB              out 0x18,R24
+ 008C                   .dbline 101
+ 008C           ;          LCD_BUS|=(LCD_Data&0xf0);//数据送数据端口  
+ 008C 842F              mov R24,R20
+ 008E 807F              andi R24,240
+ 0090 28B2              in R2,0x18
+ 0092 282A              or R2,R24
+ 0094 28BA              out 0x18,R2
+ 0096                   .dbline 103
+ 0096           ;      //delay_nus(10);   //这个延时非常重要     
+ 0096           ;       EN_SET; //E=1,写操作    
+ 0096 969A              sbi 0x12,6
+ 0098                   .dbline 104
+ 0098           ;           EN_CLR;// E=0，下角   
+ 0098 9698              cbi 0x12,6
+ 009A                   .dbline 105
+ 009A           ;                LCD_BUS&=0x0f;
+ 009A 88B3              in R24,0x18
+ 009C 8F70              andi R24,15
+ 009E 88BB              out 0x18,R24
+ 00A0                   .dbline 106
+ 00A0           ;          LCD_BUS|=(LCD_Data<<4);//数据送数据端口  
+ 00A0 842F              mov R24,R20
+ 00A2 8F70              andi R24,#0x0F
+ 00A4 8295              swap R24
+ 00A6 28B2              in R2,0x18
+ 00A8 282A              or R2,R24
+ 00AA 28BA              out 0x18,R2
+ 00AC                   .dbline 108
+ 00AC           ;      //delay_nus(10);   //这个延时非常重要     
+ 00AC           ;       EN_SET; //E=1,写操作    
+ 00AC 969A              sbi 0x12,6
+ 00AE                   .dbline 109
+ 00AE           ;           EN_CLR;// E=0，下角   
+ 00AE 9698              cbi 0x12,6
+ 00B0                   .dbline 110
+ 00B0           ;      delay_nms(5);
+ 00B0 05E0              ldi R16,5
+ 00B2 10E0              ldi R17,0
+ 00B4 0E940000          xcall _delay_nms
+ 00B8                   .dbline -2
+ 00B8           L8:
+ 00B8                   .dbline 0 ; func end
+ 00B8 4991              ld R20,y+
+ 00BA 0895              ret
+ 00BC                   .dbsym r LCD_Data 20 c
+ 00BC                   .dbend
+ 00BC                   .dbfunc e ScanKey _ScanKey fc
+ 00BC           ;            ret -> R20
+                        .even
+ 00BC           _ScanKey::
+ 00BC 4A93              st -y,R20
+ 00BE                   .dbline -1
+ 00BE                   .dbline 116
+ 00BE           ;               // while(1);
+ 00BE           ; }
+ 00BE           ;    
+ 00BE           ; //键盘扫描，无按键返回0
+ 00BE           ; uchar ScanKey()
+ 00BE           ; {
+ 00BE                   .dbline 117
+ 00BE           ;   uchar ret = 0xff;
+ 00BE 4FEF              ldi R20,255
+ 00C0                   .dbline 120
+ 00C0           ; 
+ 00C0           ;       // lie4_0;
+ 00C0           ;        delay_nms(5);
+ 00C0 05E0              ldi R16,5
+ 00C2 10E0              ldi R17,0
+ 00C4 0E940000          xcall _delay_nms
+ 00C8                   .dbline 121
+ 00C8           ;        if(!k1)
+ 00C8 9899              sbic 0x13,0
+ 00CA 03C0              rjmp L10
+ 00CC           X1:
+ 00CC                   .dbline 122
+ 00CC           ;        {
+ 00CC                   .dbline 123
+ 00CC           ;         ret=1;
+ 00CC 41E0              ldi R20,1
+ 00CE           L12:
+ 00CE                   .dbline 124
+ 00CE           ;         while(!k1);
+ 00CE           L13:
+ 00CE                   .dbline 124
+ 00CE 989B              sbis 0x13,0
+ 00D0 FECF              rjmp L12
+ 00D2           X2:
+ 00D2                   .dbline 125
+ 00D2           ;        }
+ 00D2           L10:
+ 00D2                   .dbline 126
+ 00D2           ;        if(!k2)
+ 00D2 9999              sbic 0x13,1
+ 00D4 03C0              rjmp L15
+ 00D6           X3:
+ 00D6                   .dbline 127
+ 00D6           ;        {
+ 00D6                   .dbline 128
+ 00D6           ;         ret=2;
+ 00D6 42E0              ldi R20,2
+ 00D8           L17:
+ 00D8                   .dbline 129
+ 00D8           ;         while(!k2);
+ 00D8           L18:
+ 00D8                   .dbline 129
+ 00D8 999B              sbis 0x13,1
+ 00DA FECF              rjmp L17
+ 00DC           X4:
+ 00DC                   .dbline 130
+ 00DC           ;        } 
+ 00DC           L15:
+ 00DC                   .dbline 131
+ 00DC           ;        if(!k3)
+ 00DC 9A99              sbic 0x13,2
+ 00DE 03C0              rjmp L20
+ 00E0           X5:
+ 00E0                   .dbline 132
+ 00E0           ;        {
+ 00E0                   .dbline 133
+ 00E0           ;         ret=3;
+ 00E0 43E0              ldi R20,3
+ 00E2           L22:
+ 00E2                   .dbline 134
+ 00E2           ;         while(!k3);
+ 00E2           L23:
+ 00E2                   .dbline 134
+ 00E2 9A9B              sbis 0x13,2
+ 00E4 FECF              rjmp L22
+ 00E6           X6:
+ 00E6                   .dbline 135
+ 00E6           ;        } 
+ 00E6           L20:
+ 00E6                   .dbline 136
+ 00E6           ;        if(!k4)
+ 00E6 9B99              sbic 0x13,3
+ 00E8 03C0              rjmp L25
+ 00EA           X7:
+ 00EA                   .dbline 137
+ 00EA           ;        {
+ 00EA                   .dbline 138
+ 00EA           ;         ret=4;
+ 00EA 44E0              ldi R20,4
+ 00EC           L27:
+ 00EC                   .dbline 139
+ 00EC           ;         while(!k4);
+ 00EC           L28:
+ 00EC                   .dbline 139
+ 00EC 9B9B              sbis 0x13,3
+ 00EE FECF              rjmp L27
+ 00F0           X8:
+ 00F0                   .dbline 140
+ 00F0           ;        } 
+ 00F0           L25:
+ 00F0                   .dbline 142
+ 00F0           ;       // lie4_1;
+ 00F0           ;       return ret;
+ 00F0 042F              mov R16,R20
+ 00F2                   .dbline -2
+ 00F2           L9:
+ 00F2                   .dbline 0 ; func end
+ 00F2 4991              ld R20,y+
+ 00F4 0895              ret
+ 00F6                   .dbsym r ret 20 c
+ 00F6                   .dbend
+ 00F6                   .dbfunc e LCD_Init _LCD_Init fV
+                        .even
+ 00F6           _LCD_Init::
+ 00F6                   .dbline -1
+ 00F6                   .dbline 146
+ 00F6           ; }
+ 00F6           ; //LCD初始化
+ 00F6           ; void LCD_Init(void)
+ 00F6           ; {
+ 00F6                   .dbline 147
+ 00F6           ;    delay_nms(150);
+ 00F6 06E9              ldi R16,150
+ 00F8 10E0              ldi R17,0
+ 00FA 0E940000          xcall _delay_nms
+ 00FE                   .dbline 148
+ 00FE           ;        delay_nms(15);
+ 00FE 0FE0              ldi R16,15
+ 0100 10E0              ldi R17,0
+ 0102 0E940000          xcall _delay_nms
+ 0106                   .dbline 149
+ 0106           ;        Write_Com(0x02);//显示模式设置 16*2，5*7点阵，4位数据接口
+ 0106 02E0              ldi R16,2
+ 0108 95DF              xcall _Write_Com
+ 010A                   .dbline 151
+ 010A           ; 
+ 010A           ;        delay_nms(15);
+ 010A 0FE0              ldi R16,15
+ 010C 10E0              ldi R17,0
+ 010E 0E940000          xcall _delay_nms
+ 0112                   .dbline 152
+ 0112           ;        Write_Com(0x28);//显示模式设置 16*2，5*7点阵，4位数据接口
+ 0112 08E2              ldi R16,40
+ 0114 8FDF              xcall _Write_Com
+ 0116                   .dbline 153
+ 0116           ;        delay_nms(15);
+ 0116 0FE0              ldi R16,15
+ 0118 10E0              ldi R17,0
+ 011A 0E940000          xcall _delay_nms
+ 011E                   .dbline 156
+ 011E           ;        //Write_Com(0x28);//显示模式设置 16*2，5*7点阵，4位数据接口
+ 011E           ;        //delay_nms(15);
+ 011E           ;    Write_Com(0x06);//光标设置，读或写一个字符后，地址指针加1，光标加1，整屏不移动
+ 011E 06E0              ldi R16,6
+ 0120 89DF              xcall _Write_Com
+ 0122                   .dbline 157
+ 0122           ;        delay_nms(15);
+ 0122 0FE0              ldi R16,15
+ 0124 10E0              ldi R17,0
+ 0126 0E940000          xcall _delay_nms
+ 012A                   .dbline 159
+ 012A           ;       //Write_Com(0x0f);//显示开关控制，开显示，光标显示，光标闪烁
+ 012A           ;        Write_Com(0x0c);//显示开关控制，开显示，光标不显示，光标不闪烁 
+ 012A 0CE0              ldi R16,12
+ 012C 83DF              xcall _Write_Com
+ 012E                   .dbline 160
+ 012E           ;        delay_nms(15);
+ 012E 0FE0              ldi R16,15
+ 0130 10E0              ldi R17,0
+ 0132 0E940000          xcall _delay_nms
+ 0136                   .dbline 161
+ 0136           ;        Write_Com(0x01);;//清屏
+ 0136 01E0              ldi R16,1
+ 0138 7DDF              xcall _Write_Com
+ 013A                   .dbline 161
+ 013A                   .dbline 162
+ 013A           ;        delay_nms(15);
+ 013A 0FE0              ldi R16,15
+ 013C 10E0              ldi R17,0
+ 013E                   .dbline -2
+ 013E           L30:
+ 013E                   .dbline 0 ; func end
+ 013E 0C940000          xjmp _delay_nms
+ 0142                   .dbend
+ 0142                   .dbfunc e Write_Place_xy _Write_Place_xy fV
+ 0142           ;        address -> R20
+ 0142           ;              y -> R10
+ 0142           ;              x -> R22
+                        .even
+ 0142           _Write_Place_xy::
+ 0142 0E940000          xcall push_xgsetF00C
+ 0146 A22E              mov R10,R18
+ 0148 602F              mov R22,R16
+ 014A                   .dbline -1
+ 014A                   .dbline 169
+ 014A           ; }
+ 014A           ; 
+ 014A           ; 
+ 014A           ; 
+ 014A           ; //指定当前写字符的位置
+ 014A           ; void Write_Place_xy(unsigned char x,unsigned char y)
+ 014A           ; {
+ 014A                   .dbline 171
+ 014A           ;      unsigned char address;
+ 014A           ;        if(y==0)             //行位置
+ 014A AA20              tst R10
+ 014C 19F4              brne L32
+ 014E           X9:
+ 014E                   .dbline 172
+ 014E           ;        {
+ 014E                   .dbline 173
+ 014E           ;             address=0x80+x; //列位置
+ 014E 462F              mov R20,R22
+ 0150 4058              subi R20,128    ; addi 128
+ 0152                   .dbline 174
+ 0152           ;      }
+ 0152 02C0              xjmp L33
+ 0154           L32:
+ 0154                   .dbline 176
+ 0154           ;        else 
+ 0154           ;        {
+ 0154                   .dbline 177
+ 0154           ;             address=0xc0+x;
+ 0154 462F              mov R20,R22
+ 0156 4054              subi R20,64    ; addi 192
+ 0158                   .dbline 178
+ 0158           ;        }
+ 0158           L33:
+ 0158                   .dbline 179
+ 0158           ;        Write_Com(address);  //写地址90 d0
+ 0158 042F              mov R16,R20
+ 015A 6CDF              xcall _Write_Com
+ 015C                   .dbline -2
+ 015C           L31:
+ 015C                   .dbline 0 ; func end
+ 015C 0C940000          xjmp pop_xgsetF00C
+ 0160                   .dbsym r address 20 c
+ 0160                   .dbsym r y 10 c
+ 0160                   .dbsym r x 22 c
+ 0160                   .dbend
+ 0160                   .dbfunc e Write_Data_String _Write_Data_String fV
+ 0160           ;         Length -> R12
+ 0160           ;              i -> R10
+ 0160           ;           data -> R20,R21
+ 0160           ;              y -> R12
+ 0160           ;              x -> R10
+                        .even
+ 0160           _Write_Data_String::
+ 0160 0E940000          xcall push_xgset303C
+ 0164 C22E              mov R12,R18
+ 0166 A02E              mov R10,R16
+ 0168 4E81              ldd R20,y+6
+ 016A 5F81              ldd R21,y+7
+ 016C                   .dbline -1
+ 016C                   .dbline 186
+ 016C           ;        
+ 016C           ; }
+ 016C           ; 
+ 016C           ; 
+ 016C           ; //在指定的位置写字符串
+ 016C           ; void Write_Data_String(unsigned char x,unsigned char y,unsigned char *data)
+ 016C           ; {
+ 016C                   .dbline 189
+ 016C           ;      unsigned char i;
+ 016C           ;        unsigned char Length;
+ 016C           ;        Write_Place_xy(x,y); //写地址
+ 016C 2C2D              mov R18,R12
+ 016E 0A2D              mov R16,R10
+ 0170 E8DF              xcall _Write_Place_xy
+ 0172                   .dbline 190
+ 0172           ;        delay_nms(1);
+ 0172 01E0              ldi R16,1
+ 0174 10E0              ldi R17,0
+ 0176 0E940000          xcall _delay_nms
+ 017A                   .dbline 191
+ 017A           ;      Length=strlen(data);//调用字符串函数算出字符的长度,并赋值给Length
+ 017A 8A01              movw R16,R20
+ 017C 0E940000          xcall _strlen
+ 0180 C02E              mov R12,R16
+ 0182                   .dbline 192
+ 0182           ;      for(i=0;i<Length;i++) //X坐标应小于0xF
+ 0182 AA24              clr R10
+ 0184 0AC0              xjmp L38
+ 0186           L35:
+ 0186                   .dbline 193
+ 0186           ;       {
+ 0186                   .dbline 194
+ 0186           ;          Write_Data_Byte(*data); //显示单个字符
+ 0186 FA01              movw R30,R20
+ 0188 0081              ldd R16,z+0
+ 018A 78DF              xcall _Write_Data_Byte
+ 018C                   .dbline 196
+ 018C           ;          
+ 018C           ;          data++;
+ 018C 4F5F              subi R20,255  ; offset = 1
+ 018E 5F4F              sbci R21,255
+ 0190                   .dbline 197
+ 0190           ;                                delay_nms(1);
+ 0190 01E0              ldi R16,1
+ 0192 10E0              ldi R17,0
+ 0194 0E940000          xcall _delay_nms
+ 0198                   .dbline 198
+ 0198           ;       }
+ 0198           L36:
+ 0198                   .dbline 192
+ 0198 A394              inc R10
+ 019A           L38:
+ 019A                   .dbline 192
+ 019A AC14              cp R10,R12
+ 019C A0F3              brlo L35
+ 019E           X10:
+ 019E                   .dbline -2
+ 019E           L34:
+ 019E                   .dbline 0 ; func end
+ 019E 0C940000          xjmp pop_xgset303C
+ 01A2                   .dbsym r Length 12 c
+ 01A2                   .dbsym r i 10 c
+ 01A2                   .dbsym r data 20 pc
+ 01A2                   .dbsym r y 12 c
+ 01A2                   .dbsym r x 10 c
+ 01A2                   .dbend
+ 01A2                   .dbfunc e main _main fV
+ 01A2           ;              z -> <dead>
+ 01A2           ;         keynum -> R20
+                        .even
+ 01A2           _main::
+ 01A2 2297              sbiw R28,2
+ 01A4                   .dbline -1
+ 01A4                   .dbline 206
+ 01A4           ;  
+ 01A4           ; }
+ 01A4           ; 
+ 01A4           ; 
+ 01A4           ;        
+ 01A4           ;        
+ 01A4           ; void main(void) 
+ 01A4           ; { 
+ 01A4                   .dbline 214
+ 01A4           ;   uchar z; 
+ 01A4           ;       //uchar i;
+ 01A4           ;       uchar keynum;
+ 01A4           ;       
+ 01A4           ;       
+ 01A4           ;       
+ 01A4           ;       
+ 01A4           ;       CLI(); //disable all interrupts
+ 01A4 F894              cli
+ 01A6                   .dbline 215
+ 01A6           ;   DDRC = 0X00;//IO 初始化  0是输入
+ 01A6 2224              clr R2
+ 01A8 24BA              out 0x14,R2
+ 01AA                   .dbline 216
+ 01AA           ;   PORTC = 0XFF;//IO 初始化
+ 01AA 8FEF              ldi R24,255
+ 01AC 85BB              out 0x15,R24
+ 01AE                   .dbline 218
+ 01AE           ;       
+ 01AE           ;   DDRD = 0X02;//IO 初始化
+ 01AE 82E0              ldi R24,2
+ 01B0 81BB              out 0x11,R24
+ 01B2                   .dbline 219
+ 01B2           ;   PORTD=0XFF;
+ 01B2 8FEF              ldi R24,255
+ 01B4 82BB              out 0x12,R24
+ 01B6                   .dbline 220
+ 01B6           ;   LCDPort_Init(); //端口初始化
+ 01B6 33DF              xcall _LCDPort_Init
+ 01B8                   .dbline 222
+ 01B8           ;               
+ 01B8           ;  LCD_Init();  // LCD初始化
+ 01B8 9EDF              xcall _LCD_Init
+ 01BA                   .dbline 223
+ 01BA           ;  Write_Data_String(0,0,"Huan ying");//显示第一行数据
+ 01BA 80E0              ldi R24,<L40
+ 01BC 90E0              ldi R25,>L40
+ 01BE 9983              std y+1,R25
+ 01C0 8883              std y+0,R24
+ 01C2 2227              clr R18
+ 01C4 0027              clr R16
+ 01C6 CCDF              xcall _Write_Data_String
+ 01C8                   .dbline 224
+ 01C8           ;  uart0_init();
+ 01C8 1BDF              xcall _uart0_init
+ 01CA                   .dbline 225
+ 01CA           ;   MCUCR = 0x00;
+ 01CA 2224              clr R2
+ 01CC 25BE              out 0x35,R2
+ 01CE                   .dbline 226
+ 01CE           ;  GICR  = 0x00;
+ 01CE 2BBE              out 0x3b,R2
+ 01D0                   .dbline 227
+ 01D0           ;  TIMSK = 0x00; //timer interrupt sources
+ 01D0 29BE              out 0x39,R2
+ 01D2                   .dbline 228
+ 01D2           ;  SEI(); //re-enable interrupts
+ 01D2 7894              sei
+ 01D4           L41:
+ 01D4                   .dbline 230
+ 01D4           ;  //all peripherals are now initialized
+ 01D4           ;  while(ok==0);
+ 01D4           L42:
+ 01D4                   .dbline 230
+ 01D4 20903600          lds R2,_ok
+ 01D8 2220              tst R2
+ 01DA E1F3              breq L41
+ 01DC           X11:
+ 01DC 31C2              xjmp L45
+ 01DE           L44:
+ 01DE                   .dbline 233
+ 01DE           ;  
+ 01DE           ;  while(1)
+ 01DE           ;  {  
+ 01DE                   .dbline 235
+ 01DE           ;       //ok=1;
+ 01DE           ;  keynum=ScanKey();//扫描按键
+ 01DE 6EDF              xcall _ScanKey
+ 01E0 402F              mov R20,R16
+ 01E2                   .dbline 236
+ 01E2           ;        if(keynum!=0xff)//有按键按下
+ 01E2 0F3F              cpi R16,255
+ 01E4 09F4              brne X23
+ 01E6 9BC0              xjmp L47
+ 01E8           X23:
+ 01E8           X12:
+ 01E8                   .dbline 237
+ 01E8           ;        {
+ 01E8                   .dbline 238
+ 01E8           ;                if(keynum==1)//有按键按下
+ 01E8 0130              cpi R16,1
+ 01EA 09F0              breq X24
+ 01EC 4EC0              xjmp L49
+ 01EE           X24:
+ 01EE           X13:
+ 01EE                   .dbline 239
+ 01EE           ;                {
+ 01EE                   .dbline 240
+ 01EE           ;             send_data('S');
+ 01EE 03E5              ldi R16,83
+ 01F0 12DF              xcall _send_data
+ 01F2                   .dbline 241
+ 01F2           ;                 send_data(jianshu_jilu[0][0]+0x30);
+ 01F2 00913E00          lds R16,_jianshu_jilu
+ 01F6 005D              subi R16,208    ; addi 48
+ 01F8 0EDF              xcall _send_data
+ 01FA                   .dbline 242
+ 01FA           ;                 send_data(jianshu_jilu[0][1]+0x30);
+ 01FA 00913F00          lds R16,_jianshu_jilu+1
+ 01FE 005D              subi R16,208    ; addi 48
+ 0200 0ADF              xcall _send_data
+ 0202                   .dbline 243
+ 0202           ;                 send_data(jianshu_jilu[0][2]+0x30);
+ 0202 00914000          lds R16,_jianshu_jilu+2
+ 0206 005D              subi R16,208    ; addi 48
+ 0208 06DF              xcall _send_data
+ 020A                   .dbline 244
+ 020A           ;                 send_data(jianshu_jilu[0][3]+0x30); 
+ 020A 00914100          lds R16,_jianshu_jilu+3
+ 020E 005D              subi R16,208    ; addi 48
+ 0210 02DF              xcall _send_data
+ 0212                   .dbline 245
+ 0212           ;                 send_data(jianshu_jilu[0][4]+0x30);
+ 0212 00914200          lds R16,_jianshu_jilu+4
+ 0216 005D              subi R16,208    ; addi 48
+ 0218 FEDE              xcall _send_data
+ 021A                   .dbline 246
+ 021A           ;                 send_data(jianshu_jilu[0][5]+0x30);
+ 021A 00914300          lds R16,_jianshu_jilu+5
+ 021E 005D              subi R16,208    ; addi 48
+ 0220 FADE              xcall _send_data
+ 0222                   .dbline 249
+ 0222           ; 
+ 0222           ;                 
+ 0222           ;                 send_data(jianshu_jilu[1][0]+0x30);
+ 0222 00914400          lds R16,_jianshu_jilu+6
+ 0226 005D              subi R16,208    ; addi 48
+ 0228 F6DE              xcall _send_data
+ 022A                   .dbline 250
+ 022A           ;                 send_data(jianshu_jilu[1][1]+0x30);
+ 022A 00914500          lds R16,_jianshu_jilu+6+1
+ 022E 005D              subi R16,208    ; addi 48
+ 0230 F2DE              xcall _send_data
+ 0232                   .dbline 251
+ 0232           ;                 send_data(jianshu_jilu[1][2]+0x30);
+ 0232 00914600          lds R16,_jianshu_jilu+6+2
+ 0236 005D              subi R16,208    ; addi 48
+ 0238 EEDE              xcall _send_data
+ 023A                   .dbline 252
+ 023A           ;                 send_data(jianshu_jilu[1][3]+0x30); 
+ 023A 00914700          lds R16,_jianshu_jilu+6+3
+ 023E 005D              subi R16,208    ; addi 48
+ 0240 EADE              xcall _send_data
+ 0242                   .dbline 253
+ 0242           ;                 send_data(jianshu_jilu[1][4]+0x30);
+ 0242 00914800          lds R16,_jianshu_jilu+6+4
+ 0246 005D              subi R16,208    ; addi 48
+ 0248 E6DE              xcall _send_data
+ 024A                   .dbline 254
+ 024A           ;                 send_data(jianshu_jilu[1][5]+0x30);
+ 024A 00914900          lds R16,_jianshu_jilu+6+5
+ 024E 005D              subi R16,208    ; addi 48
+ 0250 E2DE              xcall _send_data
+ 0252                   .dbline 257
+ 0252           ;         
+ 0252           ;                 
+ 0252           ;                 send_data(jianshu_jilu[2][0]+0x30);
+ 0252 00914A00          lds R16,_jianshu_jilu+12
+ 0256 005D              subi R16,208    ; addi 48
+ 0258 DEDE              xcall _send_data
+ 025A                   .dbline 258
+ 025A           ;                 send_data(jianshu_jilu[2][1]+0x30);
+ 025A 00914B00          lds R16,_jianshu_jilu+12+1
+ 025E 005D              subi R16,208    ; addi 48
+ 0260 DADE              xcall _send_data
+ 0262                   .dbline 259
+ 0262           ;                 send_data(jianshu_jilu[2][2]+0x30);
+ 0262 00914C00          lds R16,_jianshu_jilu+12+2
+ 0266 005D              subi R16,208    ; addi 48
+ 0268 D6DE              xcall _send_data
+ 026A                   .dbline 260
+ 026A           ;                 send_data(jianshu_jilu[2][3]+0x30); 
+ 026A 00914D00          lds R16,_jianshu_jilu+12+3
+ 026E 005D              subi R16,208    ; addi 48
+ 0270 D2DE              xcall _send_data
+ 0272                   .dbline 261
+ 0272           ;                 send_data(jianshu_jilu[2][4]+0x30);
+ 0272 00914E00          lds R16,_jianshu_jilu+12+4
+ 0276 005D              subi R16,208    ; addi 48
+ 0278 CEDE              xcall _send_data
+ 027A                   .dbline 262
+ 027A           ;                 send_data(jianshu_jilu[2][5]+0x30);
+ 027A 00914F00          lds R16,_jianshu_jilu+12+5
+ 027E 005D              subi R16,208    ; addi 48
+ 0280 CADE              xcall _send_data
+ 0282                   .dbline 265
+ 0282           ;   
+ 0282           ; 
+ 0282           ;                 send_data(0X0D);
+ 0282 0DE0              ldi R16,13
+ 0284 C8DE              xcall _send_data
+ 0286                   .dbline 266
+ 0286           ;                 send_data(0X0A);                
+ 0286 0AE0              ldi R16,10
+ 0288 C6DE              xcall _send_data
+ 028A                   .dbline 268
+ 028A           ;               
+ 028A           ;            }
+ 028A           L49:
+ 028A                   .dbline 270
+ 028A           ;                
+ 028A           ;                if(keynum==2)//切换菜单
+ 028A 4230              cpi R20,2
+ 028C 51F4              brne L78
+ 028E           X14:
+ 028E                   .dbline 271
+ 028E           ;                {
+ 028E                   .dbline 272
+ 028E           ;            xuhao++;
+ 028E 80913700          lds R24,_xuhao
+ 0292 8F5F              subi R24,255    ; addi 1
+ 0294 80933700          sts _xuhao,R24
+ 0298                   .dbline 273
+ 0298           ;            if(xuhao>=6)
+ 0298 8630              cpi R24,6
+ 029A 18F0              brlo L80
+ 029C           X15:
+ 029C                   .dbline 274
+ 029C           ;            xuhao=0;    
+ 029C 2224              clr R2
+ 029E 20923700          sts _xuhao,R2
+ 02A2           L80:
+ 02A2                   .dbline 275
+ 02A2           ;            } 
+ 02A2           L78:
+ 02A2                   .dbline 277
+ 02A2           ;                
+ 02A2           ;                if(keynum==3)//切换用户
+ 02A2 4330              cpi R20,3
+ 02A4 51F4              brne L82
+ 02A6           X16:
+ 02A6                   .dbline 278
+ 02A6           ;                {
+ 02A6                   .dbline 279
+ 02A6           ;            num++;
+ 02A6 80910000          lds R24,_num
+ 02AA 8F5F              subi R24,255    ; addi 1
+ 02AC 80930000          sts _num,R24
+ 02B0                   .dbline 280
+ 02B0           ;            if(num>=3)
+ 02B0 8330              cpi R24,3
+ 02B2 18F0              brlo L84
+ 02B4           X17:
+ 02B4                   .dbline 281
+ 02B4           ;            num=0;    
+ 02B4 2224              clr R2
+ 02B6 20920000          sts _num,R2
+ 02BA           L84:
+ 02BA                   .dbline 282
+ 02BA           ;            } 
+ 02BA           L82:
+ 02BA                   .dbline 284
+ 02BA           ;                
+ 02BA           ;                if(keynum==4)//点菜数量
+ 02BA 4430              cpi R20,4
+ 02BC 09F0              breq X25
+ 02BE 2FC0              xjmp L86
+ 02C0           X25:
+ 02C0           X18:
+ 02C0                   .dbline 285
+ 02C0           ;                {
+ 02C0                   .dbline 286
+ 02C0           ;            jianshu_jilu[num][xuhao]++;
+ 02C0 10910000          lds R17,_num
+ 02C4 06E0              ldi R16,6
+ 02C6 0103              mulsu R16,R17
+ 02C8 1001              movw R2,R0
+ 02CA 80E0              ldi R24,<_jianshu_jilu
+ 02CC 90E0              ldi R25,>_jianshu_jilu
+ 02CE 280E              add R2,R24
+ 02D0 391E              adc R3,R25
+ 02D2 40903700          lds R4,_xuhao
+ 02D6 5524              clr R5
+ 02D8 420C              add R4,R2
+ 02DA 531C              adc R5,R3
+ 02DC F201              movw R30,R4
+ 02DE 8081              ldd R24,z+0
+ 02E0 8F5F              subi R24,255    ; addi 1
+ 02E2 8083              std z+0,R24
+ 02E4                   .dbline 287
+ 02E4           ;            if(jianshu_jilu[num][xuhao]>=9)
+ 02E4 10910000          lds R17,_num
+ 02E8 0103              mulsu R16,R17
+ 02EA 1001              movw R2,R0
+ 02EC 80E0              ldi R24,<_jianshu_jilu
+ 02EE 90E0              ldi R25,>_jianshu_jilu
+ 02F0 280E              add R2,R24
+ 02F2 391E              adc R3,R25
+ 02F4 E0913700          lds R30,_xuhao
+ 02F8 FF27              clr R31
+ 02FA E20D              add R30,R2
+ 02FC F31D              adc R31,R3
+ 02FE 8081              ldd R24,z+0
+ 0300 8930              cpi R24,9
+ 0302 68F0              brlo L88
+ 0304           X19:
+ 0304                   .dbline 288
+ 0304           ;            jianshu_jilu[num][xuhao]=0;    
+ 0304 0103              mulsu R16,R17
+ 0306 1001              movw R2,R0
+ 0308 80E0              ldi R24,<_jianshu_jilu
+ 030A 90E0              ldi R25,>_jianshu_jilu
+ 030C 280E              add R2,R24
+ 030E 391E              adc R3,R25
+ 0310 E0913700          lds R30,_xuhao
+ 0314 FF27              clr R31
+ 0316 E20D              add R30,R2
+ 0318 F31D              adc R31,R3
+ 031A 2224              clr R2
+ 031C 2082              std z+0,R2
+ 031E           L88:
+ 031E                   .dbline 289
+ 031E           ;            }  
+ 031E           L86:
+ 031E                   .dbline 292
+ 031E           ;                 
+ 031E           ;                
+ 031E           ;        }
+ 031E           L47:
+ 031E                   .dbline 293
+ 031E           ;       if(ok==1) 
+ 031E 80913600          lds R24,_ok
+ 0322 8130              cpi R24,1
+ 0324 09F0              breq X26
+ 0326 D1C0              xjmp L90
+ 0328           X26:
+ 0328           X20:
+ 0328                   .dbline 294
+ 0328           ;       {
+ 0328                   .dbline 295
+ 0328           ;         ok=0;
+ 0328 2224              clr R2
+ 032A 20923600          sts _ok,R2
+ 032E                   .dbline 296
+ 032E           ;         LCD_Init();  // LCD初始化  
+ 032E E3DE              xcall _LCD_Init
+ 0330                   .dbline 297
+ 0330           ;   jiaxianshi[2]=wupin[0]/10+0x30;
+ 0330 1AE0              ldi R17,10
+ 0332 00910000          lds R16,_wupin
+ 0336 0E940000          xcall div8u
+ 033A 802F              mov R24,R16
+ 033C 805D              subi R24,208    ; addi 48
+ 033E 80930800          sts _jiaxianshi+2,R24
+ 0342                   .dbline 298
+ 0342           ;   jiaxianshi[3]=wupin[0]%10+0x30;
+ 0342 1AE0              ldi R17,10
+ 0344 00910000          lds R16,_wupin
+ 0348 0E940000          xcall mod8u
+ 034C 802F              mov R24,R16
+ 034E 805D              subi R24,208    ; addi 48
+ 0350 80930900          sts _jiaxianshi+3,R24
+ 0354                   .dbline 299
+ 0354           ;   Write_Data_String(0,0,wupin_ming[0]);//显示第一行数据
+ 0354 80E0              ldi R24,<_wupin_ming
+ 0356 90E0              ldi R25,>_wupin_ming
+ 0358 9983              std y+1,R25
+ 035A 8883              std y+0,R24
+ 035C 2227              clr R18
+ 035E 0027              clr R16
+ 0360 FFDE              xcall _Write_Data_String
+ 0362                   .dbline 300
+ 0362           ;   Write_Data_String(10,0,jiaxianshi);//显示第一行数据
+ 0362 80E0              ldi R24,<_jiaxianshi
+ 0364 90E0              ldi R25,>_jiaxianshi
+ 0366 9983              std y+1,R25
+ 0368 8883              std y+0,R24
+ 036A 2227              clr R18
+ 036C 0AE0              ldi R16,10
+ 036E F8DE              xcall _Write_Data_String
+ 0370                   .dbline 303
+ 0370           ;   
+ 0370           ; 
+ 0370           ;   jiaxianshi[2]=wupin[1]/10+0x30;
+ 0370 1AE0              ldi R17,10
+ 0372 00910100          lds R16,_wupin+1
+ 0376 0E940000          xcall div8u
+ 037A 802F              mov R24,R16
+ 037C 805D              subi R24,208    ; addi 48
+ 037E 80930800          sts _jiaxianshi+2,R24
+ 0382                   .dbline 304
+ 0382           ;   jiaxianshi[3]=wupin[1]%10+0x30;
+ 0382 1AE0              ldi R17,10
+ 0384 00910100          lds R16,_wupin+1
+ 0388 0E940000          xcall mod8u
+ 038C 802F              mov R24,R16
+ 038E 805D              subi R24,208    ; addi 48
+ 0390 80930900          sts _jiaxianshi+3,R24
+ 0394                   .dbline 305
+ 0394           ;   Write_Data_String(0,1,wupin_ming[1]);//显示第一行数据
+ 0394 80E0              ldi R24,<_wupin_ming+13
+ 0396 90E0              ldi R25,>_wupin_ming+13
+ 0398 9983              std y+1,R25
+ 039A 8883              std y+0,R24
+ 039C 21E0              ldi R18,1
+ 039E 0027              clr R16
+ 03A0 DFDE              xcall _Write_Data_String
+ 03A2                   .dbline 306
+ 03A2           ;   Write_Data_String(10,1,jiaxianshi);//显示第一行数据
+ 03A2 80E0              ldi R24,<_jiaxianshi
+ 03A4 90E0              ldi R25,>_jiaxianshi
+ 03A6 9983              std y+1,R25
+ 03A8 8883              std y+0,R24
+ 03AA 21E0              ldi R18,1
+ 03AC 0AE0              ldi R16,10
+ 03AE D8DE              xcall _Write_Data_String
+ 03B0                   .dbline 307
+ 03B0           ;   delay_nms(2000); 
+ 03B0 00ED              ldi R16,2000
+ 03B2 17E0              ldi R17,7
+ 03B4 0E940000          xcall _delay_nms
+ 03B8                   .dbline 311
+ 03B8           ;   
+ 03B8           ;   
+ 03B8           ;   
+ 03B8           ;   jiaxianshi[2]=wupin[2]/10+0x30;
+ 03B8 1AE0              ldi R17,10
+ 03BA 00910200          lds R16,_wupin+2
+ 03BE 0E940000          xcall div8u
+ 03C2 802F              mov R24,R16
+ 03C4 805D              subi R24,208    ; addi 48
+ 03C6 80930800          sts _jiaxianshi+2,R24
+ 03CA                   .dbline 312
+ 03CA           ;   jiaxianshi[3]=wupin[2]%10+0x30;
+ 03CA 1AE0              ldi R17,10
+ 03CC 00910200          lds R16,_wupin+2
+ 03D0 0E940000          xcall mod8u
+ 03D4 802F              mov R24,R16
+ 03D6 805D              subi R24,208    ; addi 48
+ 03D8 80930900          sts _jiaxianshi+3,R24
+ 03DC                   .dbline 313
+ 03DC           ;   Write_Data_String(0,0,wupin_ming[2]);//显示第一行数据
+ 03DC 80E0              ldi R24,<_wupin_ming+26
+ 03DE 90E0              ldi R25,>_wupin_ming+26
+ 03E0 9983              std y+1,R25
+ 03E2 8883              std y+0,R24
+ 03E4 2227              clr R18
+ 03E6 0027              clr R16
+ 03E8 BBDE              xcall _Write_Data_String
+ 03EA                   .dbline 314
+ 03EA           ;   Write_Data_String(10,0,jiaxianshi);//显示第一行数据
+ 03EA 80E0              ldi R24,<_jiaxianshi
+ 03EC 90E0              ldi R25,>_jiaxianshi
+ 03EE 9983              std y+1,R25
+ 03F0 8883              std y+0,R24
+ 03F2 2227              clr R18
+ 03F4 0AE0              ldi R16,10
+ 03F6 B4DE              xcall _Write_Data_String
+ 03F8                   .dbline 316
+ 03F8           ; 
+ 03F8           ;   jiaxianshi[2]=wupin[3]/10+0x30;
+ 03F8 1AE0              ldi R17,10
+ 03FA 00910300          lds R16,_wupin+3
+ 03FE 0E940000          xcall div8u
+ 0402 802F              mov R24,R16
+ 0404 805D              subi R24,208    ; addi 48
+ 0406 80930800          sts _jiaxianshi+2,R24
+ 040A                   .dbline 317
+ 040A           ;   jiaxianshi[3]=wupin[3]%10+0x30;
+ 040A 1AE0              ldi R17,10
+ 040C 00910300          lds R16,_wupin+3
+ 0410 0E940000          xcall mod8u
+ 0414 802F              mov R24,R16
+ 0416 805D              subi R24,208    ; addi 48
+ 0418 80930900          sts _jiaxianshi+3,R24
+ 041C                   .dbline 318
+ 041C           ;   Write_Data_String(0,1,wupin_ming[3]);//显示第一行数据
+ 041C 80E0              ldi R24,<_wupin_ming+39
+ 041E 90E0              ldi R25,>_wupin_ming+39
+ 0420 9983              std y+1,R25
+ 0422 8883              std y+0,R24
+ 0424 21E0              ldi R18,1
+ 0426 0027              clr R16
+ 0428 9BDE              xcall _Write_Data_String
+ 042A                   .dbline 319
+ 042A           ;   Write_Data_String(10,1,jiaxianshi);//显示第一行数据
+ 042A 80E0              ldi R24,<_jiaxianshi
+ 042C 90E0              ldi R25,>_jiaxianshi
+ 042E 9983              std y+1,R25
+ 0430 8883              std y+0,R24
+ 0432 21E0              ldi R18,1
+ 0434 0AE0              ldi R16,10
+ 0436 94DE              xcall _Write_Data_String
+ 0438                   .dbline 320
+ 0438           ;   delay_nms(2000); 
+ 0438 00ED              ldi R16,2000
+ 043A 17E0              ldi R17,7
+ 043C 0E940000          xcall _delay_nms
+ 0440                   .dbline 323
+ 0440           ;   
+ 0440           ;   
+ 0440           ;   jiaxianshi[2]=wupin[4]/10+0x30;
+ 0440 1AE0              ldi R17,10
+ 0442 00910400          lds R16,_wupin+4
+ 0446 0E940000          xcall div8u
+ 044A 802F              mov R24,R16
+ 044C 805D              subi R24,208    ; addi 48
+ 044E 80930800          sts _jiaxianshi+2,R24
+ 0452                   .dbline 324
+ 0452           ;   jiaxianshi[3]=wupin[4]%10+0x30;
+ 0452 1AE0              ldi R17,10
+ 0454 00910400          lds R16,_wupin+4
+ 0458 0E940000          xcall mod8u
+ 045C 802F              mov R24,R16
+ 045E 805D              subi R24,208    ; addi 48
+ 0460 80930900          sts _jiaxianshi+3,R24
+ 0464                   .dbline 325
+ 0464           ;   Write_Data_String(0,0,wupin_ming[4]);//显示第一行数据
+ 0464 80E0              ldi R24,<_wupin_ming+52
+ 0466 90E0              ldi R25,>_wupin_ming+52
+ 0468 9983              std y+1,R25
+ 046A 8883              std y+0,R24
+ 046C 2227              clr R18
+ 046E 0027              clr R16
+ 0470 77DE              xcall _Write_Data_String
+ 0472                   .dbline 326
+ 0472           ;   Write_Data_String(10,0,jiaxianshi);//显示第一行数据
+ 0472 80E0              ldi R24,<_jiaxianshi
+ 0474 90E0              ldi R25,>_jiaxianshi
+ 0476 9983              std y+1,R25
+ 0478 8883              std y+0,R24
+ 047A 2227              clr R18
+ 047C 0AE0              ldi R16,10
+ 047E 70DE              xcall _Write_Data_String
+ 0480                   .dbline 328
+ 0480           ; 
+ 0480           ;   jiaxianshi[2]=wupin[5]/10+0x30;
+ 0480 1AE0              ldi R17,10
+ 0482 00910500          lds R16,_wupin+5
+ 0486 0E940000          xcall div8u
+ 048A 802F              mov R24,R16
+ 048C 805D              subi R24,208    ; addi 48
+ 048E 80930800          sts _jiaxianshi+2,R24
+ 0492                   .dbline 329
+ 0492           ;   jiaxianshi[3]=wupin[5]%10+0x30;
+ 0492 1AE0              ldi R17,10
+ 0494 00910500          lds R16,_wupin+5
+ 0498 0E940000          xcall mod8u
+ 049C 802F              mov R24,R16
+ 049E 805D              subi R24,208    ; addi 48
+ 04A0 80930900          sts _jiaxianshi+3,R24
+ 04A4                   .dbline 330
+ 04A4           ;   Write_Data_String(0,1,wupin_ming[5]);//显示第一行数据
+ 04A4 80E0              ldi R24,<_wupin_ming+65
+ 04A6 90E0              ldi R25,>_wupin_ming+65
+ 04A8 9983              std y+1,R25
+ 04AA 8883              std y+0,R24
+ 04AC 21E0              ldi R18,1
+ 04AE 0027              clr R16
+ 04B0 57DE              xcall _Write_Data_String
+ 04B2                   .dbline 331
+ 04B2           ;   Write_Data_String(10,1,jiaxianshi);//显示第一行数据
+ 04B2 80E0              ldi R24,<_jiaxianshi
+ 04B4 90E0              ldi R25,>_jiaxianshi
+ 04B6 9983              std y+1,R25
+ 04B8 8883              std y+0,R24
+ 04BA 21E0              ldi R18,1
+ 04BC 0AE0              ldi R16,10
+ 04BE 50DE              xcall _Write_Data_String
+ 04C0                   .dbline 332
+ 04C0           ;   delay_nms(2000); 
+ 04C0 00ED              ldi R16,2000
+ 04C2 17E0              ldi R17,7
+ 04C4 0E940000          xcall _delay_nms
+ 04C8                   .dbline 333
+ 04C8           ;   LCD_Init();  // LCD初始化
+ 04C8 16DE              xcall _LCD_Init
+ 04CA                   .dbline 334
+ 04CA           ;   }
+ 04CA           L90:
+ 04CA                   .dbline 337
+ 04CA           ;   
+ 04CA           ;   
+ 04CA           ; if(ok==2) 
+ 04CA 80913600          lds R24,_ok
+ 04CE 8230              cpi R24,2
+ 04D0 09F0              breq X27
+ 04D2 60C0              xjmp L119
+ 04D4           X27:
+ 04D4           X21:
+ 04D4                   .dbline 338
+ 04D4           ;       {
+ 04D4                   .dbline 339
+ 04D4           ;         ok=0;
+ 04D4 2224              clr R2
+ 04D6 20923600          sts _ok,R2
+ 04DA                   .dbline 340
+ 04DA           ;         LCD_Init();  // LCD初始化  
+ 04DA 0DDE              xcall _LCD_Init
+ 04DC                   .dbline 342
+ 04DC           ; 
+ 04DC           ;   Write_Data_String(0,0,"Zongjia:");//显示第一行数据
+ 04DC 80E0              ldi R24,<L121
+ 04DE 90E0              ldi R25,>L121
+ 04E0 9983              std y+1,R25
+ 04E2 8883              std y+0,R24
+ 04E4 2227              clr R18
+ 04E6 0027              clr R16
+ 04E8 3BDE              xcall _Write_Data_String
+ 04EA                   .dbline 343
+ 04EA           ;   Write_Data_Byte(jiner_jilu[num]/1000+0x30); //显示单个字符
+ 04EA 80E0              ldi R24,<_jiner_jilu
+ 04EC 90E0              ldi R25,>_jiner_jilu
+ 04EE E0910000          lds R30,_num
+ 04F2 FF27              clr R31
+ 04F4 EE0F              lsl R30
+ 04F6 FF1F              rol R31
+ 04F8 E80F              add R30,R24
+ 04FA F91F              adc R31,R25
+ 04FC 0081              ldd R16,z+0
+ 04FE 1181              ldd R17,z+1
+ 0500 28EE              ldi R18,1000
+ 0502 33E0              ldi R19,3
+ 0504 0E940000          xcall div16u
+ 0508 005D              subi R16,208  ; offset = 48
+ 050A 1F4F              sbci R17,255
+ 050C B7DD              xcall _Write_Data_Byte
+ 050E                   .dbline 344
+ 050E           ;   Write_Data_Byte(jiner_jilu[num]/100%10+0x30); //显示单个字符
+ 050E 80E0              ldi R24,<_jiner_jilu
+ 0510 90E0              ldi R25,>_jiner_jilu
+ 0512 E0910000          lds R30,_num
+ 0516 FF27              clr R31
+ 0518 EE0F              lsl R30
+ 051A FF1F              rol R31
+ 051C E80F              add R30,R24
+ 051E F91F              adc R31,R25
+ 0520 0081              ldd R16,z+0
+ 0522 1181              ldd R17,z+1
+ 0524 24E6              ldi R18,100
+ 0526 30E0              ldi R19,0
+ 0528 0E940000          xcall div16u
+ 052C 2AE0              ldi R18,10
+ 052E 30E0              ldi R19,0
+ 0530 0E940000          xcall mod16u
+ 0534 005D              subi R16,208  ; offset = 48
+ 0536 1F4F              sbci R17,255
+ 0538 A1DD              xcall _Write_Data_Byte
+ 053A                   .dbline 345
+ 053A           ;   Write_Data_Byte(jiner_jilu[num]/10%10+0x30); //显示单个字符
+ 053A 80E0              ldi R24,<_jiner_jilu
+ 053C 90E0              ldi R25,>_jiner_jilu
+ 053E E0910000          lds R30,_num
+ 0542 FF27              clr R31
+ 0544 EE0F              lsl R30
+ 0546 FF1F              rol R31
+ 0548 E80F              add R30,R24
+ 054A F91F              adc R31,R25
+ 054C 0081              ldd R16,z+0
+ 054E 1181              ldd R17,z+1
+ 0550 2AE0              ldi R18,10
+ 0552 30E0              ldi R19,0
+ 0554 0E940000          xcall div16u
+ 0558 2AE0              ldi R18,10
+ 055A 30E0              ldi R19,0
+ 055C 0E940000          xcall mod16u
+ 0560 005D              subi R16,208  ; offset = 48
+ 0562 1F4F              sbci R17,255
+ 0564 8BDD              xcall _Write_Data_Byte
+ 0566                   .dbline 346
+ 0566           ;   Write_Data_Byte(jiner_jilu[num]%10+0x30); //显示单个字符
+ 0566 80E0              ldi R24,<_jiner_jilu
+ 0568 90E0              ldi R25,>_jiner_jilu
+ 056A E0910000          lds R30,_num
+ 056E FF27              clr R31
+ 0570 EE0F              lsl R30
+ 0572 FF1F              rol R31
+ 0574 E80F              add R30,R24
+ 0576 F91F              adc R31,R25
+ 0578 0081              ldd R16,z+0
+ 057A 1181              ldd R17,z+1
+ 057C 2AE0              ldi R18,10
+ 057E 30E0              ldi R19,0
+ 0580 0E940000          xcall mod16u
+ 0584 005D              subi R16,208  ; offset = 48
+ 0586 1F4F              sbci R17,255
+ 0588 79DD              xcall _Write_Data_Byte
+ 058A                   .dbline 348
+ 058A           ;  
+ 058A           ;   delay_nms(4000); 
+ 058A 00EA              ldi R16,4000
+ 058C 1FE0              ldi R17,15
+ 058E 0E940000          xcall _delay_nms
+ 0592                   .dbline 349
+ 0592           ;   LCD_Init();  // LCD初始化
+ 0592 B1DD              xcall _LCD_Init
+ 0594                   .dbline 350
+ 0594           ;   }  
+ 0594           L119:
+ 0594                   .dbline 354
+ 0594           ; 
+ 0594           ; 
+ 0594           ;   //********显示菜单第一行*******
+ 0594           ;   jiaxianshi[2]=wupin[xuhao]/10+0x30;
+ 0594 80E0              ldi R24,<_wupin
+ 0596 90E0              ldi R25,>_wupin
+ 0598 E0913700          lds R30,_xuhao
+ 059C FF27              clr R31
+ 059E E80F              add R30,R24
+ 05A0 F91F              adc R31,R25
+ 05A2 0081              ldd R16,z+0
+ 05A4 1AE0              ldi R17,10
+ 05A6 0E940000          xcall div8u
+ 05AA 802F              mov R24,R16
+ 05AC 805D              subi R24,208    ; addi 48
+ 05AE 80930800          sts _jiaxianshi+2,R24
+ 05B2                   .dbline 355
+ 05B2           ;   jiaxianshi[3]=wupin[xuhao]%10+0x30;
+ 05B2 80E0              ldi R24,<_wupin
+ 05B4 90E0              ldi R25,>_wupin
+ 05B6 E0913700          lds R30,_xuhao
+ 05BA FF27              clr R31
+ 05BC E80F              add R30,R24
+ 05BE F91F              adc R31,R25
+ 05C0 0081              ldd R16,z+0
+ 05C2 1AE0              ldi R17,10
+ 05C4 0E940000          xcall mod8u
+ 05C8 802F              mov R24,R16
+ 05CA 805D              subi R24,208    ; addi 48
+ 05CC 80930900          sts _jiaxianshi+3,R24
+ 05D0                   .dbline 356
+ 05D0           ;   Write_Data_String(0,0,wupin_ming[xuhao]);//显示第一行数据
+ 05D0 10913700          lds R17,_xuhao
+ 05D4 0DE0              ldi R16,13
+ 05D6 0103              mulsu R16,R17
+ 05D8 1001              movw R2,R0
+ 05DA 80E0              ldi R24,<_wupin_ming
+ 05DC 90E0              ldi R25,>_wupin_ming
+ 05DE 280E              add R2,R24
+ 05E0 391E              adc R3,R25
+ 05E2 3982              std y+1,R3
+ 05E4 2882              std y+0,R2
+ 05E6 2227              clr R18
+ 05E8 0027              clr R16
+ 05EA BADD              xcall _Write_Data_String
+ 05EC                   .dbline 357
+ 05EC           ;   Write_Data_String(12,0,jiaxianshi);//显示第一行数据
+ 05EC 80E0              ldi R24,<_jiaxianshi
+ 05EE 90E0              ldi R25,>_jiaxianshi
+ 05F0 9983              std y+1,R25
+ 05F2 8883              std y+0,R24
+ 05F4 2227              clr R18
+ 05F6 0CE0              ldi R16,12
+ 05F8 B3DD              xcall _Write_Data_String
+ 05FA                   .dbline 359
+ 05FA           ;   
+ 05FA           ;   Write_Data_String(0,1,"ID:");//
+ 05FA 80E0              ldi R24,<L124
+ 05FC 90E0              ldi R25,>L124
+ 05FE 9983              std y+1,R25
+ 0600 8883              std y+0,R24
+ 0602 21E0              ldi R18,1
+ 0604 0027              clr R16
+ 0606 ACDD              xcall _Write_Data_String
+ 0608                   .dbline 360
+ 0608           ;   Write_Data_Byte((num+1)+0x30); //显示单个字符
+ 0608 00910000          lds R16,_num
+ 060C 0F5C              subi R16,207    ; addi 49
+ 060E 36DD              xcall _Write_Data_Byte
+ 0610                   .dbline 362
+ 0610           ;   
+ 0610           ;    Write_Data_String(13,1,"S:");//
+ 0610 80E0              ldi R24,<L125
+ 0612 90E0              ldi R25,>L125
+ 0614 9983              std y+1,R25
+ 0616 8883              std y+0,R24
+ 0618 21E0              ldi R18,1
+ 061A 0DE0              ldi R16,13
+ 061C A1DD              xcall _Write_Data_String
+ 061E                   .dbline 363
+ 061E           ;    Write_Data_Byte(jianshu_jilu[num][xuhao]+0x30); //显示单个字符
+ 061E 10910000          lds R17,_num
+ 0622 06E0              ldi R16,6
+ 0624 0103              mulsu R16,R17
+ 0626 1001              movw R2,R0
+ 0628 80E0              ldi R24,<_jianshu_jilu
+ 062A 90E0              ldi R25,>_jianshu_jilu
+ 062C 280E              add R2,R24
+ 062E 391E              adc R3,R25
+ 0630 E0913700          lds R30,_xuhao
+ 0634 FF27              clr R31
+ 0636 E20D              add R30,R2
+ 0638 F31D              adc R31,R3
+ 063A 0081              ldd R16,z+0
+ 063C 005D              subi R16,208    ; addi 48
+ 063E 1EDD              xcall _Write_Data_Byte
+ 0640                   .dbline 367
+ 0640           ;    
+ 0640           ;   //jianshu_jilu[4][6]
+ 0640           ; 
+ 0640           ;  } 
+ 0640           L45:
+ 0640                   .dbline 232
+ 0640 CECD              xjmp L44
+ 0642           X22:
+ 0642                   .dbline -2
+ 0642           L39:
+ 0642                   .dbline 0 ; func end
+ 0642 2296              adiw R28,2
+ 0644 0895              ret
+ 0646                   .dbsym l z 3 c
+ 0646                   .dbsym r keynum 20 c
+ 0646                   .dbend
+                        .area vector(rom, abs)
+                        .org 44
+ 002C 0C942303          jmp _uart0_rx_isr
+                        .area text(rom, con, rel)
+ 0646                   .dbfile J:\1Zhongsheji_Bfen\2021年程序\2021-1月份\M16_HJ_2G双机串口电子点菜 系统\zhongduan.C
+ 0646                   .dbfunc e uart0_rx_isr _uart0_rx_isr fV
+ 0646           ;              i -> <dead>
+ 0646           ;           temp -> R20
+                        .even
+ 0646           _uart0_rx_isr::
+ 0646 0A92              st -y,R0
+ 0648 1A92              st -y,R1
+ 064A 2A92              st -y,R2
+ 064C 3A92              st -y,R3
+ 064E 4A92              st -y,R4
+ 0650 5A92              st -y,R5
+ 0652 0A93              st -y,R16
+ 0654 1A93              st -y,R17
+ 0656 2A93              st -y,R18
+ 0658 3A93              st -y,R19
+ 065A 8A93              st -y,R24
+ 065C 9A93              st -y,R25
+ 065E EA93              st -y,R30
+ 0660 FA93              st -y,R31
+ 0662 0FB6              IN R0,63
+ 0664 0A92              st -y,R0
+ 0666 4A93              st -y,R20
+ 0668                   .dbline -1
+ 0668                   .dbline 372
+ 0668           ; } 
+ 0668           ; 
+ 0668           ; #pragma interrupt_handler uart0_rx_isr:12
+ 0668           ; void uart0_rx_isr(void)
+ 0668           ; {
+ 0668                   .dbline 376
+ 0668           ; uchar i,temp;
+ 0668           ;  //uart has received a character in UDR
+ 0668           ; // UCSRB&=~BIT(RXCIE); //关闭接收中断 
+ 0668           ;  com_in_buf[count++]=UDR;//
+ 0668 20900300          lds R2,_count
+ 066C 3324              clr R3
+ 066E 822D              mov R24,R2
+ 0670 8F5F              subi R24,255    ; addi 1
+ 0672 80930300          sts _count,R24
+ 0676 80E0              ldi R24,<_com_in_buf
+ 0678 90E0              ldi R25,>_com_in_buf
+ 067A E22D              mov R30,R2
+ 067C FF27              clr R31
+ 067E E80F              add R30,R24
+ 0680 F91F              adc R31,R25
+ 0682 2CB0              in R2,0xc
+ 0684 2082              std z+0,R2
+ 0686                   .dbline 378
+ 0686           ;  // SA10B15C20D25E30F35
+ 0686           ;  if((com_in_buf[count-2]==0x0d)&&(com_in_buf[count-1]==0x0a))//接受收到进行解码
+ 0686 20900300          lds R2,_count
+ 068A 80E0              ldi R24,<_com_in_buf-2
+ 068C 90E0              ldi R25,>_com_in_buf-2
+ 068E E22D              mov R30,R2
+ 0690 FF27              clr R31
+ 0692 E80F              add R30,R24
+ 0694 F91F              adc R31,R25
+ 0696 8081              ldd R24,z+0
+ 0698 8D30              cpi R24,13
+ 069A 09F0              breq X32
+ 069C 9DC1              xjmp L127
+ 069E           X32:
+ 069E           X28:
+ 069E 80E0              ldi R24,<_com_in_buf-1
+ 06A0 90E0              ldi R25,>_com_in_buf-1
+ 06A2 E22D              mov R30,R2
+ 06A4 FF27              clr R31
+ 06A6 E80F              add R30,R24
+ 06A8 F91F              adc R31,R25
+ 06AA 8081              ldd R24,z+0
+ 06AC 8A30              cpi R24,10
+ 06AE 09F0              breq X33
+ 06B0 93C1              xjmp L127
+ 06B2           X33:
+ 06B2           X29:
+ 06B2                   .dbline 379
+ 06B2           ;  {
+ 06B2                   .dbline 380
+ 06B2           ;   if(com_in_buf[count-21]=='S')
+ 06B2 80E0              ldi R24,<_com_in_buf-21
+ 06B4 90E0              ldi R25,>_com_in_buf-21
+ 06B6 E22D              mov R30,R2
+ 06B8 FF27              clr R31
+ 06BA E80F              add R30,R24
+ 06BC F91F              adc R31,R25
+ 06BE 8081              ldd R24,z+0
+ 06C0 8335              cpi R24,83
+ 06C2 09F0              breq X34
+ 06C4 88C0              xjmp L131
+ 06C6           X34:
+ 06C6           X30:
+ 06C6                   .dbline 381
+ 06C6           ;    {
+ 06C6                   .dbline 383
+ 06C6           ;    
+ 06C6           ;     temp=com_in_buf[count-19]-0x30;
+ 06C6 80E0              ldi R24,<_com_in_buf-19
+ 06C8 90E0              ldi R25,>_com_in_buf-19
+ 06CA E22D              mov R30,R2
+ 06CC FF27              clr R31
+ 06CE E80F              add R30,R24
+ 06D0 F91F              adc R31,R25
+ 06D2 4081              ldd R20,z+0
+ 06D4 4053              subi R20,48
+ 06D6                   .dbline 384
+ 06D6           ;     temp=temp*10;
+ 06D6 0AE0              ldi R16,10
+ 06D8 142F              mov R17,R20
+ 06DA 0103              mulsu R16,R17
+ 06DC 402D              mov R20,R0
+ 06DE                   .dbline 385
+ 06DE           ;       temp+=com_in_buf[count-18]-0x30;
+ 06DE 80E0              ldi R24,<_com_in_buf-18
+ 06E0 90E0              ldi R25,>_com_in_buf-18
+ 06E2 E22D              mov R30,R2
+ 06E4 FF27              clr R31
+ 06E6 E80F              add R30,R24
+ 06E8 F91F              adc R31,R25
+ 06EA 8081              ldd R24,z+0
+ 06EC 8053              subi R24,48
+ 06EE 480F              add R20,R24
+ 06F0                   .dbline 386
+ 06F0           ;       wupin[0]=temp;//物品A 价格
+ 06F0 40930000          sts _wupin,R20
+ 06F4                   .dbline 389
+ 06F4           ;       
+ 06F4           ;       
+ 06F4           ;     temp=com_in_buf[count-16]-0x30;
+ 06F4 80E0              ldi R24,<_com_in_buf-16
+ 06F6 90E0              ldi R25,>_com_in_buf-16
+ 06F8 E22D              mov R30,R2
+ 06FA FF27              clr R31
+ 06FC E80F              add R30,R24
+ 06FE F91F              adc R31,R25
+ 0700 4081              ldd R20,z+0
+ 0702 4053              subi R20,48
+ 0704                   .dbline 390
+ 0704           ;     temp=temp*10;
+ 0704 142F              mov R17,R20
+ 0706 0103              mulsu R16,R17
+ 0708 402D              mov R20,R0
+ 070A                   .dbline 391
+ 070A           ;       temp+=com_in_buf[count-15]-0x30;
+ 070A 80E0              ldi R24,<_com_in_buf-15
+ 070C 90E0              ldi R25,>_com_in_buf-15
+ 070E E22D              mov R30,R2
+ 0710 FF27              clr R31
+ 0712 E80F              add R30,R24
+ 0714 F91F              adc R31,R25
+ 0716 8081              ldd R24,z+0
+ 0718 8053              subi R24,48
+ 071A 480F              add R20,R24
+ 071C                   .dbline 392
+ 071C           ;       wupin[1]=temp;//物品A 价格
+ 071C 40930100          sts _wupin+1,R20
+ 0720                   .dbline 394
+ 0720           ;       
+ 0720           ;       temp=com_in_buf[count-13]-0x30;
+ 0720 80E0              ldi R24,<_com_in_buf-13
+ 0722 90E0              ldi R25,>_com_in_buf-13
+ 0724 E22D              mov R30,R2
+ 0726 FF27              clr R31
+ 0728 E80F              add R30,R24
+ 072A F91F              adc R31,R25
+ 072C 4081              ldd R20,z+0
+ 072E 4053              subi R20,48
+ 0730                   .dbline 395
+ 0730           ;     temp=temp*10;
+ 0730 142F              mov R17,R20
+ 0732 0103              mulsu R16,R17
+ 0734 402D              mov R20,R0
+ 0736                   .dbline 396
+ 0736           ;       temp+=com_in_buf[count-12]-0x30;
+ 0736 80E0              ldi R24,<_com_in_buf-12
+ 0738 90E0              ldi R25,>_com_in_buf-12
+ 073A E22D              mov R30,R2
+ 073C FF27              clr R31
+ 073E E80F              add R30,R24
+ 0740 F91F              adc R31,R25
+ 0742 8081              ldd R24,z+0
+ 0744 8053              subi R24,48
+ 0746 480F              add R20,R24
+ 0748                   .dbline 397
+ 0748           ;       wupin[2]=temp;//物品A 价格
+ 0748 40930200          sts _wupin+2,R20
+ 074C                   .dbline 399
+ 074C           ;       
+ 074C           ;        temp=com_in_buf[count-10]-0x30;
+ 074C 80E0              ldi R24,<_com_in_buf-10
+ 074E 90E0              ldi R25,>_com_in_buf-10
+ 0750 E22D              mov R30,R2
+ 0752 FF27              clr R31
+ 0754 E80F              add R30,R24
+ 0756 F91F              adc R31,R25
+ 0758 4081              ldd R20,z+0
+ 075A 4053              subi R20,48
+ 075C                   .dbline 400
+ 075C           ;      temp=temp*10;
+ 075C 142F              mov R17,R20
+ 075E 0103              mulsu R16,R17
+ 0760 402D              mov R20,R0
+ 0762                   .dbline 401
+ 0762           ;        temp+=com_in_buf[count-9]-0x30;
+ 0762 80E0              ldi R24,<_com_in_buf-9
+ 0764 90E0              ldi R25,>_com_in_buf-9
+ 0766 E22D              mov R30,R2
+ 0768 FF27              clr R31
+ 076A E80F              add R30,R24
+ 076C F91F              adc R31,R25
+ 076E 8081              ldd R24,z+0
+ 0770 8053              subi R24,48
+ 0772 480F              add R20,R24
+ 0774                   .dbline 402
+ 0774           ;        wupin[3]=temp;//物品A 价格
+ 0774 40930300          sts _wupin+3,R20
+ 0778                   .dbline 404
+ 0778           ;        
+ 0778           ;        temp=com_in_buf[count-7]-0x30;
+ 0778 80E0              ldi R24,<_com_in_buf-7
+ 077A 90E0              ldi R25,>_com_in_buf-7
+ 077C E22D              mov R30,R2
+ 077E FF27              clr R31
+ 0780 E80F              add R30,R24
+ 0782 F91F              adc R31,R25
+ 0784 4081              ldd R20,z+0
+ 0786 4053              subi R20,48
+ 0788                   .dbline 405
+ 0788           ;      temp=temp*10;
+ 0788 142F              mov R17,R20
+ 078A 0103              mulsu R16,R17
+ 078C 402D              mov R20,R0
+ 078E                   .dbline 406
+ 078E           ;        temp+=com_in_buf[count-6]-0x30;
+ 078E 80E0              ldi R24,<_com_in_buf-6
+ 0790 90E0              ldi R25,>_com_in_buf-6
+ 0792 E22D              mov R30,R2
+ 0794 FF27              clr R31
+ 0796 E80F              add R30,R24
+ 0798 F91F              adc R31,R25
+ 079A 8081              ldd R24,z+0
+ 079C 8053              subi R24,48
+ 079E 480F              add R20,R24
+ 07A0                   .dbline 407
+ 07A0           ;        wupin[4]=temp;//物品A 价格      
+ 07A0 40930400          sts _wupin+4,R20
+ 07A4                   .dbline 409
+ 07A4           ;        
+ 07A4           ;        temp=com_in_buf[count-4]-0x30;
+ 07A4 80E0              ldi R24,<_com_in_buf-4
+ 07A6 90E0              ldi R25,>_com_in_buf-4
+ 07A8 E22D              mov R30,R2
+ 07AA FF27              clr R31
+ 07AC E80F              add R30,R24
+ 07AE F91F              adc R31,R25
+ 07B0 4081              ldd R20,z+0
+ 07B2 4053              subi R20,48
+ 07B4                   .dbline 410
+ 07B4           ;      temp=temp*10;
+ 07B4 142F              mov R17,R20
+ 07B6 0103              mulsu R16,R17
+ 07B8 402D              mov R20,R0
+ 07BA                   .dbline 411
+ 07BA           ;        temp+=com_in_buf[count-3]-0x30;
+ 07BA 80E0              ldi R24,<_com_in_buf-3
+ 07BC 90E0              ldi R25,>_com_in_buf-3
+ 07BE E22D              mov R30,R2
+ 07C0 FF27              clr R31
+ 07C2 E80F              add R30,R24
+ 07C4 F91F              adc R31,R25
+ 07C6 8081              ldd R24,z+0
+ 07C8 8053              subi R24,48
+ 07CA 480F              add R20,R24
+ 07CC                   .dbline 412
+ 07CC           ;        wupin[5]=temp;//物品A 价格 
+ 07CC 40930500          sts _wupin+5,R20
+ 07D0                   .dbline 414
+ 07D0           ;        
+ 07D0           ;        ok=1;
+ 07D0 81E0              ldi R24,1
+ 07D2 80933600          sts _ok,R24
+ 07D6                   .dbline 415
+ 07D6           ;    }
+ 07D6           L131:
+ 07D6                   .dbline 418
+ 07D6           ;    
+ 07D6           ;    
+ 07D6           ;    if(com_in_buf[count-15]=='J')
+ 07D6 80E0              ldi R24,<_com_in_buf-15
+ 07D8 90E0              ldi R25,>_com_in_buf-15
+ 07DA E0910300          lds R30,_count
+ 07DE FF27              clr R31
+ 07E0 E80F              add R30,R24
+ 07E2 F91F              adc R31,R25
+ 07E4 8081              ldd R24,z+0
+ 07E6 8A34              cpi R24,74
+ 07E8 09F0              breq X35
+ 07EA F3C0              xjmp L151
+ 07EC           X35:
+ 07EC           X31:
+ 07EC                   .dbline 419
+ 07EC           ;    {
+ 07EC                   .dbline 421
+ 07EC           ;   
+ 07EC           ;     temp=com_in_buf[count-14]-0x30;
+ 07EC 80E0              ldi R24,<_com_in_buf-14
+ 07EE 90E0              ldi R25,>_com_in_buf-14
+ 07F0 E0910300          lds R30,_count
+ 07F4 FF27              clr R31
+ 07F6 E80F              add R30,R24
+ 07F8 F91F              adc R31,R25
+ 07FA 4081              ldd R20,z+0
+ 07FC 4053              subi R20,48
+ 07FE                   .dbline 422
+ 07FE           ;     jiner_jilu[0]=temp*1000;
+ 07FE 242F              mov R18,R20
+ 0800 3327              clr R19
+ 0802 08EE              ldi R16,1000
+ 0804 13E0              ldi R17,3
+ 0806 0E940000          xcall empy16s
+ 080A 10933900          sts _jiner_jilu+1,R17
+ 080E 00933800          sts _jiner_jilu,R16
+ 0812                   .dbline 423
+ 0812           ;       temp=com_in_buf[count-13]-0x30;
+ 0812 80E0              ldi R24,<_com_in_buf-13
+ 0814 90E0              ldi R25,>_com_in_buf-13
+ 0816 E0910300          lds R30,_count
+ 081A FF27              clr R31
+ 081C E80F              add R30,R24
+ 081E F91F              adc R31,R25
+ 0820 4081              ldd R20,z+0
+ 0822 4053              subi R20,48
+ 0824                   .dbline 424
+ 0824           ;     jiner_jilu[0]+=temp*100;
+ 0824 04E6              ldi R16,100
+ 0826 142F              mov R17,R20
+ 0828 0103              mulsu R16,R17
+ 082A 20903800          lds R2,_jiner_jilu
+ 082E 30903900          lds R3,_jiner_jilu+1
+ 0832 200C              add R2,R0
+ 0834 311C              adc R3,R1
+ 0836 30923900          sts _jiner_jilu+1,R3
+ 083A 20923800          sts _jiner_jilu,R2
+ 083E                   .dbline 425
+ 083E           ;       temp=com_in_buf[count-12]-0x30;
+ 083E 80E0              ldi R24,<_com_in_buf-12
+ 0840 90E0              ldi R25,>_com_in_buf-12
+ 0842 E0910300          lds R30,_count
+ 0846 FF27              clr R31
+ 0848 E80F              add R30,R24
+ 084A F91F              adc R31,R25
+ 084C 4081              ldd R20,z+0
+ 084E 4053              subi R20,48
+ 0850                   .dbline 426
+ 0850           ;     jiner_jilu[0]+=temp*10;
+ 0850 0AE0              ldi R16,10
+ 0852 142F              mov R17,R20
+ 0854 0103              mulsu R16,R17
+ 0856 200C              add R2,R0
+ 0858 311C              adc R3,R1
+ 085A 30923900          sts _jiner_jilu+1,R3
+ 085E 20923800          sts _jiner_jilu,R2
+ 0862                   .dbline 427
+ 0862           ;     temp=com_in_buf[count-11]-0x30;
+ 0862 80E0              ldi R24,<_com_in_buf-11
+ 0864 90E0              ldi R25,>_com_in_buf-11
+ 0866 E0910300          lds R30,_count
+ 086A FF27              clr R31
+ 086C E80F              add R30,R24
+ 086E F91F              adc R31,R25
+ 0870 4081              ldd R20,z+0
+ 0872 4053              subi R20,48
+ 0874                   .dbline 428
+ 0874           ;     jiner_jilu[0]+=temp;
+ 0874 242E              mov R2,R20
+ 0876 3324              clr R3
+ 0878 40903800          lds R4,_jiner_jilu
+ 087C 50903900          lds R5,_jiner_jilu+1
+ 0880 420C              add R4,R2
+ 0882 531C              adc R5,R3
+ 0884 50923900          sts _jiner_jilu+1,R5
+ 0888 40923800          sts _jiner_jilu,R4
+ 088C                   .dbline 430
+ 088C           ; 
+ 088C           ;     temp=com_in_buf[count-10]-0x30;
+ 088C 80E0              ldi R24,<_com_in_buf-10
+ 088E 90E0              ldi R25,>_com_in_buf-10
+ 0890 E0910300          lds R30,_count
+ 0894 FF27              clr R31
+ 0896 E80F              add R30,R24
+ 0898 F91F              adc R31,R25
+ 089A 4081              ldd R20,z+0
+ 089C 4053              subi R20,48
+ 089E                   .dbline 431
+ 089E           ;     jiner_jilu[1]=temp*1000;
+ 089E 242F              mov R18,R20
+ 08A0 3327              clr R19
+ 08A2 08EE              ldi R16,1000
+ 08A4 13E0              ldi R17,3
+ 08A6 0E940000          xcall empy16s
+ 08AA 10933B00          sts _jiner_jilu+2+1,R17
+ 08AE 00933A00          sts _jiner_jilu+2,R16
+ 08B2                   .dbline 432
+ 08B2           ;       temp=com_in_buf[count-9]-0x30;
+ 08B2 80E0              ldi R24,<_com_in_buf-9
+ 08B4 90E0              ldi R25,>_com_in_buf-9
+ 08B6 E0910300          lds R30,_count
+ 08BA FF27              clr R31
+ 08BC E80F              add R30,R24
+ 08BE F91F              adc R31,R25
+ 08C0 4081              ldd R20,z+0
+ 08C2 4053              subi R20,48
+ 08C4                   .dbline 433
+ 08C4           ;     jiner_jilu[1]+=temp*100;
+ 08C4 04E6              ldi R16,100
+ 08C6 142F              mov R17,R20
+ 08C8 0103              mulsu R16,R17
+ 08CA 20903A00          lds R2,_jiner_jilu+2
+ 08CE 30903B00          lds R3,_jiner_jilu+2+1
+ 08D2 200C              add R2,R0
+ 08D4 311C              adc R3,R1
+ 08D6 30923B00          sts _jiner_jilu+2+1,R3
+ 08DA 20923A00          sts _jiner_jilu+2,R2
+ 08DE                   .dbline 434
+ 08DE           ;       temp=com_in_buf[count-8]-0x30;
+ 08DE 80E0              ldi R24,<_com_in_buf-8
+ 08E0 90E0              ldi R25,>_com_in_buf-8
+ 08E2 E0910300          lds R30,_count
+ 08E6 FF27              clr R31
+ 08E8 E80F              add R30,R24
+ 08EA F91F              adc R31,R25
+ 08EC 4081              ldd R20,z+0
+ 08EE 4053              subi R20,48
+ 08F0                   .dbline 435
+ 08F0           ;     jiner_jilu[1]+=temp*10;
+ 08F0 0AE0              ldi R16,10
+ 08F2 142F              mov R17,R20
+ 08F4 0103              mulsu R16,R17
+ 08F6 200C              add R2,R0
+ 08F8 311C              adc R3,R1
+ 08FA 30923B00          sts _jiner_jilu+2+1,R3
+ 08FE 20923A00          sts _jiner_jilu+2,R2
+ 0902                   .dbline 436
+ 0902           ;     temp=com_in_buf[count-7]-0x30;
+ 0902 80E0              ldi R24,<_com_in_buf-7
+ 0904 90E0              ldi R25,>_com_in_buf-7
+ 0906 E0910300          lds R30,_count
+ 090A FF27              clr R31
+ 090C E80F              add R30,R24
+ 090E F91F              adc R31,R25
+ 0910 4081              ldd R20,z+0
+ 0912 4053              subi R20,48
+ 0914                   .dbline 437
+ 0914           ;     jiner_jilu[1]+=temp;      
+ 0914 242E              mov R2,R20
+ 0916 3324              clr R3
+ 0918 40903A00          lds R4,_jiner_jilu+2
+ 091C 50903B00          lds R5,_jiner_jilu+2+1
+ 0920 420C              add R4,R2
+ 0922 531C              adc R5,R3
+ 0924 50923B00          sts _jiner_jilu+2+1,R5
+ 0928 40923A00          sts _jiner_jilu+2,R4
+ 092C                   .dbline 440
+ 092C           ;       
+ 092C           ;       
+ 092C           ;        temp=com_in_buf[count-6]-0x30;
+ 092C 80E0              ldi R24,<_com_in_buf-6
+ 092E 90E0              ldi R25,>_com_in_buf-6
+ 0930 E0910300          lds R30,_count
+ 0934 FF27              clr R31
+ 0936 E80F              add R30,R24
+ 0938 F91F              adc R31,R25
+ 093A 4081              ldd R20,z+0
+ 093C 4053              subi R20,48
+ 093E                   .dbline 441
+ 093E           ;     jiner_jilu[2]=temp*1000;
+ 093E 242F              mov R18,R20
+ 0940 3327              clr R19
+ 0942 08EE              ldi R16,1000
+ 0944 13E0              ldi R17,3
+ 0946 0E940000          xcall empy16s
+ 094A 10933D00          sts _jiner_jilu+4+1,R17
+ 094E 00933C00          sts _jiner_jilu+4,R16
+ 0952                   .dbline 442
+ 0952           ;       temp=com_in_buf[count-5]-0x30;
+ 0952 80E0              ldi R24,<_com_in_buf-5
+ 0954 90E0              ldi R25,>_com_in_buf-5
+ 0956 E0910300          lds R30,_count
+ 095A FF27              clr R31
+ 095C E80F              add R30,R24
+ 095E F91F              adc R31,R25
+ 0960 4081              ldd R20,z+0
+ 0962 4053              subi R20,48
+ 0964                   .dbline 443
+ 0964           ;     jiner_jilu[2]+=temp*100;
+ 0964 04E6              ldi R16,100
+ 0966 142F              mov R17,R20
+ 0968 0103              mulsu R16,R17
+ 096A 20903C00          lds R2,_jiner_jilu+4
+ 096E 30903D00          lds R3,_jiner_jilu+4+1
+ 0972 200C              add R2,R0
+ 0974 311C              adc R3,R1
+ 0976 30923D00          sts _jiner_jilu+4+1,R3
+ 097A 20923C00          sts _jiner_jilu+4,R2
+ 097E                   .dbline 444
+ 097E           ;       temp=com_in_buf[count-4]-0x30;
+ 097E 80E0              ldi R24,<_com_in_buf-4
+ 0980 90E0              ldi R25,>_com_in_buf-4
+ 0982 E0910300          lds R30,_count
+ 0986 FF27              clr R31
+ 0988 E80F              add R30,R24
+ 098A F91F              adc R31,R25
+ 098C 4081              ldd R20,z+0
+ 098E 4053              subi R20,48
+ 0990                   .dbline 445
+ 0990           ;     jiner_jilu[2]+=temp*10;
+ 0990 0AE0              ldi R16,10
+ 0992 142F              mov R17,R20
+ 0994 0103              mulsu R16,R17
+ 0996 200C              add R2,R0
+ 0998 311C              adc R3,R1
+ 099A 30923D00          sts _jiner_jilu+4+1,R3
+ 099E 20923C00          sts _jiner_jilu+4,R2
+ 09A2                   .dbline 446
+ 09A2           ;     temp=com_in_buf[count-3]-0x30;
+ 09A2 80E0              ldi R24,<_com_in_buf-3
+ 09A4 90E0              ldi R25,>_com_in_buf-3
+ 09A6 E0910300          lds R30,_count
+ 09AA FF27              clr R31
+ 09AC E80F              add R30,R24
+ 09AE F91F              adc R31,R25
+ 09B0 4081              ldd R20,z+0
+ 09B2 4053              subi R20,48
+ 09B4                   .dbline 447
+ 09B4           ;     jiner_jilu[2]+=temp;
+ 09B4 242E              mov R2,R20
+ 09B6 3324              clr R3
+ 09B8 40903C00          lds R4,_jiner_jilu+4
+ 09BC 50903D00          lds R5,_jiner_jilu+4+1
+ 09C0 420C              add R4,R2
+ 09C2 531C              adc R5,R3
+ 09C4 50923D00          sts _jiner_jilu+4+1,R5
+ 09C8 40923C00          sts _jiner_jilu+4,R4
+ 09CC                   .dbline 449
+ 09CC           ; 
+ 09CC           ;        ok=2;
+ 09CC 82E0              ldi R24,2
+ 09CE 80933600          sts _ok,R24
+ 09D2                   .dbline 450
+ 09D2           ;    } 
+ 09D2           L151:
+ 09D2                   .dbline 451
+ 09D2           ;   count=0;
+ 09D2 2224              clr R2
+ 09D4 20920300          sts _count,R2
+ 09D8                   .dbline 452
+ 09D8           ;  }
+ 09D8           L127:
+ 09D8                   .dbline -2
+ 09D8           L126:
+ 09D8                   .dbline 0 ; func end
+ 09D8 4991              ld R20,y+
+ 09DA 0990              ld R0,y+
+ 09DC 0FBE              OUT 63,R0
+ 09DE F991              ld R31,y+
+ 09E0 E991              ld R30,y+
+ 09E2 9991              ld R25,y+
+ 09E4 8991              ld R24,y+
+ 09E6 3991              ld R19,y+
+ 09E8 2991              ld R18,y+
+ 09EA 1991              ld R17,y+
+ 09EC 0991              ld R16,y+
+ 09EE 5990              ld R5,y+
+ 09F0 4990              ld R4,y+
+ 09F2 3990              ld R3,y+
+ 09F4 2990              ld R2,y+
+ 09F6 1990              ld R1,y+
+ 09F8 0990              ld R0,y+
+ 09FA 1895              reti
+ 09FC                   .dbsym l i 1 c
+ 09FC                   .dbsym r temp 20 c
+ 09FC                   .dbend
+                        .area bss(ram, con, rel)
+ 0000                   .dbfile J:\1Zhongsheji_Bfen\2021年程序\2021-1月份\M16_HJ_2G双机串口电子点菜 系统\zhongduan.C
+ 0000           _num::
+ 0000                   .blkb 1
+ 0001                   .dbsym e num _num c
+ 0001           _jianshu::
+ 0001                   .blkb 1
+ 0002                   .dbsym e jianshu _jianshu c
+ 0002           _mode::
+ 0002                   .blkb 1
+ 0003                   .dbsym e mode _mode c
+ 0003           _count::
+ 0003                   .blkb 1
+ 0004                   .dbsym e count _count c
+ 0004           _com_in_buf::
+ 0004                   .blkb 50
+ 0036                   .dbsym e com_in_buf _com_in_buf A[50:50]c
+ 0036           _ok::
+ 0036                   .blkb 1
+ 0037                   .dbsym e ok _ok c
+ 0037           _xuhao::
+ 0037                   .blkb 1
+ 0038                   .dbsym e xuhao _xuhao c
+ 0038           _jiner_jilu::
+ 0038                   .blkb 6
+ 003E                   .dbsym e jiner_jilu _jiner_jilu A[6:3]i
+ 003E           _jianshu_jilu::
+ 003E                   .blkb 18
+ 0050                   .dbsym e jianshu_jilu _jianshu_jilu A[18:3:6]c
+                        .area data(ram, con, rel)
+ 0059                   .dbfile J:\1Zhongsheji_Bfen\2021年程序\2021-1月份\M16_HJ_2G双机串口电子点菜 系统\zhongduan.C
+ 0059           L125:
+ 0059                   .blkb 3
+                        .area idata
+ 0059 533A00            .byte 'S,58,0
+                        .area data(ram, con, rel)
+ 005C                   .dbfile J:\1Zhongsheji_Bfen\2021年程序\2021-1月份\M16_HJ_2G双机串口电子点菜 系统\zhongduan.C
+ 005C           L124:
+ 005C                   .blkb 4
+                        .area idata
+ 005C 49443A00          .byte 'I,'D,58,0
+                        .area data(ram, con, rel)
+ 0060                   .dbfile J:\1Zhongsheji_Bfen\2021年程序\2021-1月份\M16_HJ_2G双机串口电子点菜 系统\zhongduan.C
+ 0060           L121:
+ 0060                   .blkb 9
+                        .area idata
+ 0060 5A6F6E676A69613A00        .byte 'Z,'o,'n,'g,'j,'i,'a,58,0
+                        .area data(ram, con, rel)
+ 0069                   .dbfile J:\1Zhongsheji_Bfen\2021年程序\2021-1月份\M16_HJ_2G双机串口电子点菜 系统\zhongduan.C
+ 0069           L40:
+ 0069                   .blkb 10
+                        .area idata
+ 0069 4875616E2079696E6700      .byte 'H,'u,'a,'n,32,'y,'i,'n,'g,0
+                        .area data(ram, con, rel)
+ 0073                   .dbfile J:\1Zhongsheji_Bfen\2021年程序\2021-1月份\M16_HJ_2G双机串口电子点菜 系统\zhongduan.C
+ 0073           ; // UCSRB|=BIT(RXCIE); //使能接收中断
+ 0073           ; 
+ 0073           ; }

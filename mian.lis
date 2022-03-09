@@ -1,0 +1,924 @@
+                        .module mian.c
+                        .area text(rom, con, rel)
+ 0000                   .dbfile mian.c
+ 0000                   .dbfile J:\AVRCHENGXU\2017-5月份\M16双机串口通信\uart.h
+ 0000                   .dbfunc e uart0_init _uart0_init fV
+                        .even
+ 0000           _uart0_init::
+ 0000                   .dbline -1
+ 0000                   .dbline 9
+ 0000           ; //包含所需头文件
+ 0000           ; #include <iom16v.h> 
+ 0000           ; #include <macros.h>
+ 0000           ; 
+ 0000           ; //UART0 initialize
+ 0000           ; // desired baud rate: 9600
+ 0000           ; // actual: baud rate:9615 (0.2%)
+ 0000           ; void uart0_init(void)
+ 0000           ; {
+ 0000                   .dbline 10
+ 0000           ;  UCSRB = 0x00; //disable while setting baud rate
+ 0000 2224              clr R2
+ 0002 2AB8              out 0xa,R2
+ 0004                   .dbline 11
+ 0004           ;  UCSRA = 0x00;
+ 0004 2BB8              out 0xb,R2
+ 0006                   .dbline 12
+ 0006           ;  UCSRC = BIT(URSEL) | 0x06;
+ 0006 86E8              ldi R24,134
+ 0008 80BD              out 0x20,R24
+ 000A                   .dbline 13
+ 000A           ;  UBRRL = 51; //set baud rate lo         如果是8M 此选择       
+ 000A 83E3              ldi R24,51
+ 000C 89B9              out 0x9,R24
+ 000E                   .dbline 16
+ 000E           ;  //UBRRL = 71; //set baud rate lo             如果是11.0592 此选择
+ 000E           ; 
+ 000E           ;  UBRRH = 0x00; //set baud rate hi
+ 000E 20BC              out 0x20,R2
+ 0010                   .dbline 17
+ 0010           ;  UCSRB = 0x98;//发送使能
+ 0010 88E9              ldi R24,152
+ 0012 8AB9              out 0xa,R24
+ 0014                   .dbline -2
+ 0014           L1:
+ 0014                   .dbline 0 ; func end
+ 0014 0895              ret
+ 0016                   .dbend
+ 0016                   .dbfunc e send_data _send_data fV
+ 0016           ;           back -> R16
+                        .even
+ 0016           _send_data::
+ 0016                   .dbline -1
+ 0016                   .dbline 22
+ 0016           ; }
+ 0016           ; 
+ 0016           ; 
+ 0016           ; void send_data(unsigned char back)
+ 0016           ; {
+ 0016           L3:
+ 0016                   .dbline 23
+ 0016           ;   while( !( UCSRA & (1<<UDRE)) ) ;
+ 0016           L4:
+ 0016                   .dbline 23
+ 0016 5D9B              sbis 0xb,5
+ 0018 FECF              rjmp L3
+ 001A           X0:
+ 001A                   .dbline 24
+ 001A           ;   UDR=back;
+ 001A 0CB9              out 0xc,R16
+ 001C                   .dbline -2
+ 001C           L2:
+ 001C                   .dbline 0 ; func end
+ 001C 0895              ret
+ 001E                   .dbsym r back 16 c
+ 001E                   .dbend
+                        .area data(ram, con, rel)
+ 0000                   .dbfile J:\AVRCHENGXU\2017-5月份\M16双机串口通信\uart.h
+ 0000           _ledcode::
+ 0000                   .blkb 2
+                        .area idata
+ 0000 C0F9              .byte 192,249
+                        .area data(ram, con, rel)
+ 0002                   .dbfile J:\AVRCHENGXU\2017-5月份\M16双机串口通信\uart.h
+ 0002                   .blkb 2
+                        .area idata
+ 0002 A4B0              .byte 164,176
+                        .area data(ram, con, rel)
+ 0004                   .dbfile J:\AVRCHENGXU\2017-5月份\M16双机串口通信\uart.h
+ 0004                   .blkb 2
+                        .area idata
+ 0004 9992              .byte 153,146
+                        .area data(ram, con, rel)
+ 0006                   .dbfile J:\AVRCHENGXU\2017-5月份\M16双机串口通信\uart.h
+ 0006                   .blkb 2
+                        .area idata
+ 0006 82F8              .byte 130,248
+                        .area data(ram, con, rel)
+ 0008                   .dbfile J:\AVRCHENGXU\2017-5月份\M16双机串口通信\uart.h
+ 0008                   .blkb 2
+                        .area idata
+ 0008 8090              .byte 128,144
+                        .area data(ram, con, rel)
+ 000A                   .dbfile J:\AVRCHENGXU\2017-5月份\M16双机串口通信\uart.h
+ 000A                   .blkb 2
+                        .area idata
+ 000A 8883              .byte 136,131
+                        .area data(ram, con, rel)
+ 000C                   .dbfile J:\AVRCHENGXU\2017-5月份\M16双机串口通信\uart.h
+ 000C                   .blkb 2
+                        .area idata
+ 000C C6A1              .byte 198,161
+                        .area data(ram, con, rel)
+ 000E                   .dbfile J:\AVRCHENGXU\2017-5月份\M16双机串口通信\uart.h
+ 000E                   .blkb 2
+                        .area idata
+ 000E 868E              .byte 134,142
+                        .area data(ram, con, rel)
+ 0010                   .dbfile J:\AVRCHENGXU\2017-5月份\M16双机串口通信\uart.h
+ 0010                   .dbfile J:\AVRCHENGXU\2017-5月份\M16双机串口通信\mian.c
+ 0010                   .dbsym e ledcode _ledcode A[16:16]c
+                        .area text(rom, con, rel)
+ 001E                   .dbfile J:\AVRCHENGXU\2017-5月份\M16双机串口通信\mian.c
+ 001E                   .dbfunc e send_dat _send_dat fV
+ 001E           ;           addr -> <dead>
+ 001E           ;             ch -> <dead>
+                        .even
+ 001E           _send_dat::
+ 001E 1A93              st -y,r17
+ 0020 0A93              st -y,r16
+ 0022                   .dbline -1
+ 0022                   .dbline 60
+ 0022           ;  #include <iom16v.h> 
+ 0022           ; #include <macros.h>   
+ 0022           ; #include "uart.h"//延时函数
+ 0022           ; #include "delay.h"//延时函数
+ 0022           ; #define uint  unsigned int 
+ 0022           ; #define uchar unsigned char
+ 0022           ; 
+ 0022           ; uchar datbuf[4];      
+ 0022           ; uchar shu[4]; 
+ 0022           ; char geshu;
+ 0022           ;  
+ 0022           ; uint crcdat;
+ 0022           ; char mode;
+ 0022           ; uchar shu1;
+ 0022           ; uchar shu2;
+ 0022           ; uchar shu3;
+ 0022           ; uchar shu4;
+ 0022           ; 
+ 0022           ; unsigned char com_in_buf[50];
+ 0022           ; unsigned char count;
+ 0022           ; 
+ 0022           ; 
+ 0022           ; #define MX485_CLR    PORTD&= ~(1 << PD2) 
+ 0022           ; #define MX485_SET    PORTD |= (1 << PD2)              
+ 0022           ; uchar  display_data[4];
+ 0022           ; 
+ 0022           ; uchar ledcode[]={0xC0,0xF9,0xA4,0xB0,0x99,0x92,0x82,0xF8,// 数码管编码表
+ 0022           ;                  0x80,0x90,0x88,0x83,0xC6,0xA1,0x86,0x8E};
+ 0022           ;                                                 
+ 0022           ; 
+ 0022           ; #define       P_HC595_SER_0 PORTB&= ~(1 << PB5)       //pin 14        SER             data input
+ 0022           ; #define       P_HC595_SER_1 PORTB |= (1 << PB5)               //pin 14        SER             data input
+ 0022           ; 
+ 0022           ; 
+ 0022           ; #define       P_HC595_RCLK_0 PORTB&= ~(1 << PB4)      //pin 12        RCLk    store (latch) clock
+ 0022           ; #define       P_HC595_RCLK_1 PORTB |= (1 << PB4) 
+ 0022           ; 
+ 0022           ; #define       P_HC595_SRCLK_0 PORTB&= ~(1 << PB7)        //pin 11     SRCLK   Shift data clock
+ 0022           ; #define       P_HC595_SRCLK_1 PORTB |= (1 << PB7) 
+ 0022           ; 
+ 0022           ; #define       P_HC595_MR_0 PORTB&= ~(1 << PB6)           //pin 10     MR      
+ 0022           ; #define       P_HC595_MR_1 PORTB |= (1 << PB6) 
+ 0022           ; 
+ 0022           ; 
+ 0022           ; //sbit        P_HC595_OE = P3^7;      //pin 13
+ 0022           ; 
+ 0022           ; 
+ 0022           ; 
+ 0022           ; 
+ 0022           ; 
+ 0022           ;                                                        
+ 0022           ;        
+ 0022           ; 
+ 0022           ;       
+ 0022           ; 
+ 0022           ; 
+ 0022           ; 
+ 0022           ; 
+ 0022           ; void send_dat(uchar ch)
+ 0022           ; {                     
+ 0022                   .dbline 64
+ 0022           ;        uchar addr;
+ 0022           ; 
+ 0022           ; 
+ 0022           ;    datbuf[0]=0XAA;
+ 0022 8AEA              ldi R24,170
+ 0024 80934300          sts _datbuf,R24
+ 0028                   .dbline 65
+ 0028           ;        datbuf[1]=0X55;
+ 0028 85E5              ldi R24,85
+ 002A 80934400          sts _datbuf+1,R24
+ 002E                   .dbline 68
+ 002E           ; 
+ 002E           ; 
+ 002E           ;        send_data(datbuf[0]);
+ 002E 00914300          lds R16,_datbuf
+ 0032 F1DF              xcall _send_data
+ 0034                   .dbline 69
+ 0034           ;        send_data(datbuf[1]);  
+ 0034 00914400          lds R16,_datbuf+1
+ 0038 EEDF              xcall _send_data
+ 003A                   .dbline 70
+ 003A           ;        send_data(datbuf[2]);  
+ 003A 00914500          lds R16,_datbuf+2
+ 003E EBDF              xcall _send_data
+ 0040                   .dbline 71
+ 0040           ;        send_data(datbuf[3]);   
+ 0040 00914600          lds R16,_datbuf+3
+ 0044 E8DF              xcall _send_data
+ 0046                   .dbline 72
+ 0046           ;      send_data(crcdat&0xff); 
+ 0046 00913C00          lds R16,_crcdat
+ 004A 10913D00          lds R17,_crcdat+1
+ 004E 1070              andi R17,0
+ 0050 E2DF              xcall _send_data
+ 0052                   .dbline 73
+ 0052           ;        send_data(crcdat>>8);  
+ 0052 00913C00          lds R16,_crcdat
+ 0056 10913D00          lds R17,_crcdat+1
+ 005A 012F              mov R16,R17
+ 005C 1127              clr R17
+ 005E DBDF              xcall _send_data
+ 0060                   .dbline -2
+ 0060           L6:
+ 0060                   .dbline 0 ; func end
+ 0060 2296              adiw R28,2
+ 0062 0895              ret
+ 0064                   .dbsym l addr 1 c
+ 0064                   .dbsym l ch 0 c
+ 0064                   .dbend
+ 0064                   .dbfunc e Send_595 _Send_595 fV
+ 0064           ;              i -> R20
+ 0064           ;            dat -> R16
+                        .even
+ 0064           _Send_595::
+ 0064 4A93              st -y,R20
+ 0066                   .dbline -1
+ 0066                   .dbline 79
+ 0066           ; 
+ 0066           ; }
+ 0066           ; 
+ 0066           ; /**********************************************/
+ 0066           ; void Send_595(unsigned char dat)      //发送一个字节
+ 0066           ; {             
+ 0066                   .dbline 81
+ 0066           ;       unsigned char   i;
+ 0066           ;       for(i=0; i<8; i++)
+ 0066 4427              clr R20
+ 0068 0AC0              xjmp L15
+ 006A           L12:
+ 006A                   .dbline 82
+ 006A           ;       {
+ 006A                   .dbline 83
+ 006A           ;           P_HC595_MR_1;
+ 006A C69A              sbi 0x18,6
+ 006C                   .dbline 84
+ 006C           ;               if(dat & 0x80)  P_HC595_SER_1;
+ 006C 07FF              sbrs R16,7
+ 006E 02C0              rjmp L16
+ 0070           X1:
+ 0070                   .dbline 84
+ 0070 C59A              sbi 0x18,5
+ 0072 01C0              xjmp L17
+ 0074           L16:
+ 0074                   .dbline 85
+ 0074           ;               else                    P_HC595_SER_0;
+ 0074 C598              cbi 0x18,5
+ 0076           L17:
+ 0076                   .dbline 86
+ 0076           ;               P_HC595_SRCLK_1;
+ 0076 C79A              sbi 0x18,7
+ 0078                   .dbline 87
+ 0078           ;               P_HC595_SRCLK_0;
+ 0078 C798              cbi 0x18,7
+ 007A                   .dbline 88
+ 007A           ;               dat = dat << 1;
+ 007A 000F              lsl R16
+ 007C                   .dbline 89
+ 007C           ;       }
+ 007C           L13:
+ 007C                   .dbline 81
+ 007C 4395              inc R20
+ 007E           L15:
+ 007E                   .dbline 81
+ 007E 4830              cpi R20,8
+ 0080 A0F3              brlo L12
+ 0082           X2:
+ 0082                   .dbline -2
+ 0082           L11:
+ 0082                   .dbline 0 ; func end
+ 0082 4991              ld R20,y+
+ 0084 0895              ret
+ 0086                   .dbsym r i 20 c
+ 0086                   .dbsym r dat 16 c
+ 0086                   .dbend
+ 0086                   .dbfunc e temptoseg _temptoseg fV
+                        .even
+ 0086           _temptoseg::
+ 0086                   .dbline -1
+ 0086                   .dbline 95
+ 0086           ; }
+ 0086           ; 
+ 0086           ; 
+ 0086           ; 
+ 0086           ; void temptoseg() // 数码管扫描程序
+ 0086           ;  {
+ 0086                   .dbline 96
+ 0086           ;    display_data[0] = ledcode[4]; //最高位显示位置
+ 0086 20900400          lds R2,_ledcode+4
+ 008A 20920000          sts _display_data,R2
+ 008E                   .dbline 97
+ 008E           ;    display_data[1] = ledcode[3];
+ 008E 20900300          lds R2,_ledcode+3
+ 0092 20920100          sts _display_data+1,R2
+ 0096                   .dbline 98
+ 0096           ;    display_data[2] = ledcode[2];
+ 0096 20900200          lds R2,_ledcode+2
+ 009A 20920200          sts _display_data+2,R2
+ 009E                   .dbline 99
+ 009E           ;    display_data[3] = ledcode[1];
+ 009E 20900100          lds R2,_ledcode+1
+ 00A2 20920300          sts _display_data+3,R2
+ 00A6                   .dbline 102
+ 00A6           ; 
+ 00A6           ;     
+ 00A6           ;   Send_595(display_data[0]);// 送数码管第1位
+ 00A6 00910000          lds R16,_display_data
+ 00AA DCDF              xcall _Send_595
+ 00AC                   .dbline 103
+ 00AC           ;    P_HC595_RCLK_0;                                                    //锁存输出数据  
+ 00AC C498              cbi 0x18,4
+ 00AE                   .dbline 104
+ 00AE           ;    P_HC595_RCLK_1;
+ 00AE C49A              sbi 0x18,4
+ 00B0                   .dbline 105
+ 00B0           ;    PORTB&= ~(1 << PB3); 
+ 00B0 C398              cbi 0x18,3
+ 00B2                   .dbline 106
+ 00B2           ;    delay_nms(4); PORTB|=(1 << PB3); 
+ 00B2 04E0              ldi R16,4
+ 00B4 10E0              ldi R17,0
+ 00B6 0E940000          xcall _delay_nms
+ 00BA                   .dbline 106
+ 00BA C39A              sbi 0x18,3
+ 00BC                   .dbline 107
+ 00BC           ;    Send_595(display_data[1]);// 送数码管第2位
+ 00BC 00910100          lds R16,_display_data+1
+ 00C0 D1DF              xcall _Send_595
+ 00C2                   .dbline 108
+ 00C2           ;    P_HC595_RCLK_0;                                                    //锁存输出数据  
+ 00C2 C498              cbi 0x18,4
+ 00C4                   .dbline 109
+ 00C4           ;    P_HC595_RCLK_1;
+ 00C4 C49A              sbi 0x18,4
+ 00C6                   .dbline 110
+ 00C6           ;   PORTB&= ~(1 << PB2); 
+ 00C6 C298              cbi 0x18,2
+ 00C8                   .dbline 111
+ 00C8           ;   delay_nms(4); PORTB|=(1 << PB2); 
+ 00C8 04E0              ldi R16,4
+ 00CA 10E0              ldi R17,0
+ 00CC 0E940000          xcall _delay_nms
+ 00D0                   .dbline 111
+ 00D0 C29A              sbi 0x18,2
+ 00D2                   .dbline 112
+ 00D2           ;   Send_595(display_data[2]);// 送数码管第3位
+ 00D2 00910200          lds R16,_display_data+2
+ 00D6 C6DF              xcall _Send_595
+ 00D8                   .dbline 113
+ 00D8           ;    P_HC595_RCLK_0;                                                    //锁存输出数据  
+ 00D8 C498              cbi 0x18,4
+ 00DA                   .dbline 114
+ 00DA           ;    P_HC595_RCLK_1;
+ 00DA C49A              sbi 0x18,4
+ 00DC                   .dbline 115
+ 00DC           ;   PORTB&= ~(1 << PB1); 
+ 00DC C198              cbi 0x18,1
+ 00DE                   .dbline 116
+ 00DE           ;   delay_nms(4); PORTB|=(1 << PB1); 
+ 00DE 04E0              ldi R16,4
+ 00E0 10E0              ldi R17,0
+ 00E2 0E940000          xcall _delay_nms
+ 00E6                   .dbline 116
+ 00E6 C19A              sbi 0x18,1
+ 00E8                   .dbline 117
+ 00E8           ;   Send_595(display_data[3]); // 送数码管第4位
+ 00E8 00910300          lds R16,_display_data+3
+ 00EC BBDF              xcall _Send_595
+ 00EE                   .dbline 118
+ 00EE           ;    P_HC595_RCLK_0;                                                    //锁存输出数据  
+ 00EE C498              cbi 0x18,4
+ 00F0                   .dbline 119
+ 00F0           ;    P_HC595_RCLK_1;
+ 00F0 C49A              sbi 0x18,4
+ 00F2                   .dbline 120
+ 00F2           ;   PORTB&= ~(1 << PB0); 
+ 00F2 C098              cbi 0x18,0
+ 00F4                   .dbline 121
+ 00F4           ;   delay_nms(4); PORTB|=(1 << PB0); 
+ 00F4 04E0              ldi R16,4
+ 00F6 10E0              ldi R17,0
+ 00F8 0E940000          xcall _delay_nms
+ 00FC                   .dbline 121
+ 00FC C09A              sbi 0x18,0
+ 00FE                   .dbline -2
+ 00FE           L18:
+ 00FE                   .dbline 0 ; func end
+ 00FE 0895              ret
+ 0100                   .dbend
+                        .area vector(rom, abs)
+                        .org 44
+ 002C 0C948000          jmp _uart0_rx_isr
+                        .area text(rom, con, rel)
+ 0100                   .dbfile J:\AVRCHENGXU\2017-5月份\M16双机串口通信\mian.c
+ 0100                   .dbfunc e uart0_rx_isr _uart0_rx_isr fV
+ 0100           ;              i -> <dead>
+                        .even
+ 0100           _uart0_rx_isr::
+ 0100 2A92              st -y,R2
+ 0102 3A92              st -y,R3
+ 0104 8A93              st -y,R24
+ 0106 9A93              st -y,R25
+ 0108 EA93              st -y,R30
+ 010A FA93              st -y,R31
+ 010C 2FB6              IN R2,63
+ 010E 2A92              st -y,R2
+ 0110                   .dbline -1
+ 0110                   .dbline 130
+ 0110           ; 
+ 0110           ;  }
+ 0110           ;  
+ 0110           ;  
+ 0110           ;  
+ 0110           ; 
+ 0110           ; #pragma interrupt_handler uart0_rx_isr:12
+ 0110           ; void uart0_rx_isr(void)
+ 0110           ; {
+ 0110                   .dbline 133
+ 0110           ; uchar i;
+ 0110           ;  //uart has received a character in UDR
+ 0110           ;  UCSRB&=~BIT(RXCIE); //关闭接收中断 
+ 0110 5798              cbi 0xa,7
+ 0112                   .dbline 134
+ 0112           ;  com_in_buf[count++]=UDR;//
+ 0112 20900400          lds R2,_count
+ 0116 3324              clr R3
+ 0118 822D              mov R24,R2
+ 011A 8F5F              subi R24,255    ; addi 1
+ 011C 80930400          sts _count,R24
+ 0120 80E0              ldi R24,<_com_in_buf
+ 0122 90E0              ldi R25,>_com_in_buf
+ 0124 E22D              mov R30,R2
+ 0126 FF27              clr R31
+ 0128 E80F              add R30,R24
+ 012A F91F              adc R31,R25
+ 012C 2CB0              in R2,0xc
+ 012E 2082              std z+0,R2
+ 0130                   .dbline 135
+ 0130           ;  if((com_in_buf[count-2]==0x0d)&&(com_in_buf[count-1]==0x0a))//接受收到进行解码
+ 0130 20900400          lds R2,_count
+ 0134 80E0              ldi R24,<_com_in_buf-2
+ 0136 90E0              ldi R25,>_com_in_buf-2
+ 0138 E22D              mov R30,R2
+ 013A FF27              clr R31
+ 013C E80F              add R30,R24
+ 013E F91F              adc R31,R25
+ 0140 8081              ldd R24,z+0
+ 0142 8D30              cpi R24,13
+ 0144 09F0              breq X5
+ 0146 33C0              xjmp L30
+ 0148           X5:
+ 0148           X3:
+ 0148 80E0              ldi R24,<_com_in_buf-1
+ 014A 90E0              ldi R25,>_com_in_buf-1
+ 014C E22D              mov R30,R2
+ 014E FF27              clr R31
+ 0150 E80F              add R30,R24
+ 0152 F91F              adc R31,R25
+ 0154 8081              ldd R24,z+0
+ 0156 8A30              cpi R24,10
+ 0158 51F5              brne L30
+ 015A           X4:
+ 015A                   .dbline 136
+ 015A           ;  {
+ 015A                   .dbline 137
+ 015A           ;    shu4=com_in_buf[count-3];
+ 015A 80E0              ldi R24,<_com_in_buf-3
+ 015C 90E0              ldi R25,>_com_in_buf-3
+ 015E E22D              mov R30,R2
+ 0160 FF27              clr R31
+ 0162 E80F              add R30,R24
+ 0164 F91F              adc R31,R25
+ 0166 2080              ldd R2,z+0
+ 0168 20923700          sts _shu4,R2
+ 016C                   .dbline 138
+ 016C           ;    shu3=com_in_buf[count-4];
+ 016C 80E0              ldi R24,<_com_in_buf-4
+ 016E 90E0              ldi R25,>_com_in_buf-4
+ 0170 E0910400          lds R30,_count
+ 0174 FF27              clr R31
+ 0176 E80F              add R30,R24
+ 0178 F91F              adc R31,R25
+ 017A 2080              ldd R2,z+0
+ 017C 20923800          sts _shu3,R2
+ 0180                   .dbline 139
+ 0180           ;    shu2=com_in_buf[count-5];
+ 0180 80E0              ldi R24,<_com_in_buf-5
+ 0182 90E0              ldi R25,>_com_in_buf-5
+ 0184 E0910400          lds R30,_count
+ 0188 FF27              clr R31
+ 018A E80F              add R30,R24
+ 018C F91F              adc R31,R25
+ 018E 2080              ldd R2,z+0
+ 0190 20923900          sts _shu2,R2
+ 0194                   .dbline 140
+ 0194           ;    shu1=com_in_buf[count-6];
+ 0194 80E0              ldi R24,<_com_in_buf-6
+ 0196 90E0              ldi R25,>_com_in_buf-6
+ 0198 E0910400          lds R30,_count
+ 019C FF27              clr R31
+ 019E E80F              add R30,R24
+ 01A0 F91F              adc R31,R25
+ 01A2 2080              ldd R2,z+0
+ 01A4 20923A00          sts _shu1,R2
+ 01A8                   .dbline 142
+ 01A8           ;    
+ 01A8           ;    count=0;
+ 01A8 2224              clr R2
+ 01AA 20920400          sts _count,R2
+ 01AE                   .dbline 143
+ 01AE           ;  }
+ 01AE           L30:
+ 01AE                   .dbline 144
+ 01AE           ;  UCSRB|=BIT(RXCIE); //使能接收中断
+ 01AE 579A              sbi 0xa,7
+ 01B0                   .dbline -2
+ 01B0           L29:
+ 01B0                   .dbline 0 ; func end
+ 01B0 2990              ld R2,y+
+ 01B2 2FBE              OUT 63,R2
+ 01B4 F991              ld R31,y+
+ 01B6 E991              ld R30,y+
+ 01B8 9991              ld R25,y+
+ 01BA 8991              ld R24,y+
+ 01BC 3990              ld R3,y+
+ 01BE 2990              ld R2,y+
+ 01C0 1895              reti
+ 01C2                   .dbsym l i 1 c
+ 01C2                   .dbend
+ 01C2                   .dbfunc e keyscan _keyscan fc
+ 01C2           ;            key -> R20
+                        .even
+ 01C2           _keyscan::
+ 01C2 4A93              st -y,R20
+ 01C4                   .dbline -1
+ 01C4                   .dbline 150
+ 01C4           ; 
+ 01C4           ; }
+ 01C4           ; 
+ 01C4           ; 
+ 01C4           ; uchar keyscan()
+ 01C4           ; {
+ 01C4                   .dbline 151
+ 01C4           ;  uchar key=0xff;
+ 01C4 4FEF              ldi R20,255
+ 01C6                   .dbline 153
+ 01C6           ;  
+ 01C6           ;  if(PINA!=0XFF)
+ 01C6 89B3              in R24,0x19
+ 01C8 8F3F              cpi R24,255
+ 01CA 21F1              breq L39
+ 01CC           X6:
+ 01CC                   .dbline 154
+ 01CC           ;  {
+ 01CC                   .dbline 155
+ 01CC           ;  delay_nms(10);
+ 01CC 0AE0              ldi R16,10
+ 01CE 10E0              ldi R17,0
+ 01D0 0E940000          xcall _delay_nms
+ 01D4                   .dbline 156
+ 01D4           ;  if(PINA==0X0FE) key=1;
+ 01D4 89B3              in R24,0x19
+ 01D6 8E3F              cpi R24,254
+ 01D8 09F4              brne L41
+ 01DA           X7:
+ 01DA                   .dbline 156
+ 01DA 41E0              ldi R20,1
+ 01DC           L41:
+ 01DC                   .dbline 157
+ 01DC           ;  if(PINA==0X0FD) key=2;
+ 01DC 89B3              in R24,0x19
+ 01DE 8D3F              cpi R24,253
+ 01E0 09F4              brne L43
+ 01E2           X8:
+ 01E2                   .dbline 157
+ 01E2 42E0              ldi R20,2
+ 01E4           L43:
+ 01E4                   .dbline 158
+ 01E4           ;  if(PINA==0X0FB) key=3;
+ 01E4 89B3              in R24,0x19
+ 01E6 8B3F              cpi R24,251
+ 01E8 09F4              brne L45
+ 01EA           X9:
+ 01EA                   .dbline 158
+ 01EA 43E0              ldi R20,3
+ 01EC           L45:
+ 01EC                   .dbline 159
+ 01EC           ;  if(PINA==0X0F7) key=4;
+ 01EC 89B3              in R24,0x19
+ 01EE 873F              cpi R24,247
+ 01F0 09F4              brne L47
+ 01F2           X10:
+ 01F2                   .dbline 159
+ 01F2 44E0              ldi R20,4
+ 01F4           L47:
+ 01F4                   .dbline 160
+ 01F4           ;  if(PINA==0X0EF) key=5;
+ 01F4 89B3              in R24,0x19
+ 01F6 8F3E              cpi R24,239
+ 01F8 09F4              brne L49
+ 01FA           X11:
+ 01FA                   .dbline 160
+ 01FA 45E0              ldi R20,5
+ 01FC           L49:
+ 01FC                   .dbline 161
+ 01FC           ;  if(PINA==0X0DF) key=6;
+ 01FC 89B3              in R24,0x19
+ 01FE 8F3D              cpi R24,223
+ 0200 09F4              brne L51
+ 0202           X12:
+ 0202                   .dbline 161
+ 0202 46E0              ldi R20,6
+ 0204           L51:
+ 0204                   .dbline 162
+ 0204           ;  if(PINA==0X0BF) key=7;
+ 0204 89B3              in R24,0x19
+ 0206 8F3B              cpi R24,191
+ 0208 09F4              brne L53
+ 020A           X13:
+ 020A                   .dbline 162
+ 020A 47E0              ldi R20,7
+ 020C           L53:
+ 020C                   .dbline 163
+ 020C           ;  if(PINA==0X07F) key=8;
+ 020C 89B3              in R24,0x19
+ 020E 8F37              cpi R24,127
+ 0210 09F4              brne L55
+ 0212           X14:
+ 0212                   .dbline 163
+ 0212 48E0              ldi R20,8
+ 0214           L55:
+ 0214                   .dbline 164
+ 0214           ;  }
+ 0214           L39:
+ 0214                   .dbline 165
+ 0214           ;  return key;
+ 0214 042F              mov R16,R20
+ 0216                   .dbline -2
+ 0216           L38:
+ 0216                   .dbline 0 ; func end
+ 0216 4991              ld R20,y+
+ 0218 0895              ret
+ 021A                   .dbsym r key 20 c
+ 021A                   .dbend
+ 021A                   .dbfunc e main _main fV
+ 021A           ;              k -> R20,R21
+ 021A           ;         keynum -> R22
+                        .even
+ 021A           _main::
+ 021A                   .dbline -1
+ 021A                   .dbline 174
+ 021A           ; }
+ 021A           ; 
+ 021A           ;       
+ 021A           ;       
+ 021A           ;       
+ 021A           ; 
+ 021A           ; 
+ 021A           ; void main(void) 
+ 021A           ; {             
+ 021A                   .dbline 183
+ 021A           ;   uint k;
+ 021A           ; 
+ 021A           ;   uchar keynum;       
+ 021A           ; 
+ 021A           ;   //uchar z; 
+ 021A           ;       //uchar i;      
+ 021A           ; 
+ 021A           ; 
+ 021A           ;       CLI(); //disable all interrupts
+ 021A F894              cli
+ 021C                   .dbline 184
+ 021C           ;       DDRA = 0X00;//IO 初始化          为 输入模式
+ 021C 2224              clr R2
+ 021E 2ABA              out 0x1a,R2
+ 0220                   .dbline 185
+ 0220           ;       PORTA=0XFF;              
+ 0220 8FEF              ldi R24,255
+ 0222 8BBB              out 0x1b,R24
+ 0224                   .dbline 187
+ 0224           ; 
+ 0224           ;     DDRB = 0XFF;//IO 初始化           
+ 0224 87BB              out 0x17,R24
+ 0226                   .dbline 188
+ 0226           ;       PORTB=0XFF;             
+ 0226 88BB              out 0x18,R24
+ 0228                   .dbline 192
+ 0228           ; 
+ 0228           ;       
+ 0228           ; 
+ 0228           ;      DDRD = 0X06;//IO 初始化                   txd输出          485PD2
+ 0228 86E0              ldi R24,6
+ 022A 81BB              out 0x11,R24
+ 022C                   .dbline 193
+ 022C           ;       PORTD=0XFF;
+ 022C 8FEF              ldi R24,255
+ 022E 82BB              out 0x12,R24
+ 0230                   .dbline 195
+ 0230           ; 
+ 0230           ;  uart0_init();         
+ 0230 E7DE              xcall _uart0_init
+ 0232                   .dbline 196
+ 0232           ;  SEI(); //re-enable interrupts
+ 0232 7894              sei
+ 0234 44C0              xjmp L59
+ 0236           L58:
+ 0236                   .dbline 199
+ 0236           ; 
+ 0236           ;  while(1)
+ 0236           ;  {  
+ 0236                   .dbline 200
+ 0236           ;    keynum=keyscan();//扫描按键
+ 0236 C5DF              xcall _keyscan
+ 0238 602F              mov R22,R16
+ 023A                   .dbline 201
+ 023A           ;    if(keynum!=0xff)//有按键按下
+ 023A 0F3F              cpi R16,255
+ 023C 49F1              breq L61
+ 023E           X15:
+ 023E                   .dbline 202
+ 023E           ;       {
+ 023E                   .dbline 203
+ 023E           ;        shu[geshu++]=keynum;
+ 023E 20903E00          lds R2,_geshu
+ 0242 3324              clr R3
+ 0244 822D              mov R24,R2
+ 0246 8F5F              subi R24,255    ; addi 1
+ 0248 80933E00          sts _geshu,R24
+ 024C 80E0              ldi R24,<_shu
+ 024E 90E0              ldi R25,>_shu
+ 0250 E22D              mov R30,R2
+ 0252 FF27              clr R31
+ 0254 E80F              add R30,R24
+ 0256 F91F              adc R31,R25
+ 0258 6083              std z+0,R22
+ 025A                   .dbline 204
+ 025A           ;        if(geshu==4)
+ 025A 80913E00          lds R24,_geshu
+ 025E 8430              cpi R24,4
+ 0260 99F4              brne L69
+ 0262           X16:
+ 0262                   .dbline 205
+ 0262           ;        {
+ 0262                   .dbline 206
+ 0262           ;         geshu=0;
+ 0262 2224              clr R2
+ 0264 20923E00          sts _geshu,R2
+ 0268                   .dbline 207
+ 0268           ;          send_data(shu[0]);
+ 0268 00913F00          lds R16,_shu
+ 026C D4DE              xcall _send_data
+ 026E                   .dbline 208
+ 026E           ;        send_data(shu[1]);
+ 026E 00914000          lds R16,_shu+1
+ 0272 D1DE              xcall _send_data
+ 0274                   .dbline 209
+ 0274           ;        send_data(shu[2]);
+ 0274 00914100          lds R16,_shu+2
+ 0278 CEDE              xcall _send_data
+ 027A                   .dbline 210
+ 027A           ;        send_data(shu[3]);
+ 027A 00914200          lds R16,_shu+3
+ 027E CBDE              xcall _send_data
+ 0280                   .dbline 211
+ 0280           ;        send_data(0x0d);
+ 0280 0DE0              ldi R16,13
+ 0282 C9DE              xcall _send_data
+ 0284                   .dbline 212
+ 0284           ;        send_data(0x0a); 
+ 0284 0AE0              ldi R16,10
+ 0286 C7DE              xcall _send_data
+ 0288                   .dbline 214
+ 0288           ;        
+ 0288           ;        }
+ 0288           L68:
+ 0288                   .dbline 215
+ 0288           ;     while(keyscan()!=0xff);
+ 0288           L69:
+ 0288                   .dbline 215
+ 0288 9CDF              xcall _keyscan
+ 028A 602F              mov R22,R16
+ 028C 0F3F              cpi R16,255
+ 028E E1F7              brne L68
+ 0290           X17:
+ 0290                   .dbline 216
+ 0290           ;       }
+ 0290           L61:
+ 0290                   .dbline 221
+ 0290           ;  
+ 0290           ;  
+ 0290           ;  
+ 0290           ;  
+ 0290           ;  if(k++>100)
+ 0290 BA01              movw R22,R20
+ 0292 4F5F              subi R20,255  ; offset = 1
+ 0294 5F4F              sbci R21,255
+ 0296 84E6              ldi R24,100
+ 0298 90E0              ldi R25,0
+ 029A 8617              cp R24,R22
+ 029C 9707              cpc R25,R23
+ 029E 70F4              brsh L71
+ 02A0           X18:
+ 02A0                   .dbline 222
+ 02A0           ;  {
+ 02A0                   .dbline 223
+ 02A0           ;  k=0;
+ 02A0 4427              clr R20
+ 02A2 5527              clr R21
+ 02A4                   .dbline 224
+ 02A4           ;   send_data(5);
+ 02A4 05E0              ldi R16,5
+ 02A6 B7DE              xcall _send_data
+ 02A8                   .dbline 225
+ 02A8           ;   send_data(6);
+ 02A8 06E0              ldi R16,6
+ 02AA B5DE              xcall _send_data
+ 02AC                   .dbline 226
+ 02AC           ;   send_data(7);
+ 02AC 07E0              ldi R16,7
+ 02AE B3DE              xcall _send_data
+ 02B0                   .dbline 227
+ 02B0           ;   send_data(8);
+ 02B0 08E0              ldi R16,8
+ 02B2 B1DE              xcall _send_data
+ 02B4                   .dbline 228
+ 02B4           ;   send_data(0x0d);
+ 02B4 0DE0              ldi R16,13
+ 02B6 AFDE              xcall _send_data
+ 02B8                   .dbline 229
+ 02B8           ;   send_data(0x0a);
+ 02B8 0AE0              ldi R16,10
+ 02BA ADDE              xcall _send_data
+ 02BC                   .dbline 231
+ 02BC           ;  
+ 02BC           ;  }
+ 02BC           L71:
+ 02BC                   .dbline 234
+ 02BC           ; 
+ 02BC           ;               
+ 02BC           ;  temptoseg() ;
+ 02BC E4DE              xcall _temptoseg
+ 02BE                   .dbline 235
+ 02BE           ;  } 
+ 02BE           L59:
+ 02BE                   .dbline 198
+ 02BE BBCF              xjmp L58
+ 02C0           X19:
+ 02C0                   .dbline -2
+ 02C0           L57:
+ 02C0                   .dbline 0 ; func end
+ 02C0 0895              ret
+ 02C2                   .dbsym r k 20 i
+ 02C2                   .dbsym r keynum 22 c
+ 02C2                   .dbend
+                        .area bss(ram, con, rel)
+ 0000                   .dbfile J:\AVRCHENGXU\2017-5月份\M16双机串口通信\mian.c
+ 0000           _display_data::
+ 0000                   .blkb 4
+ 0004                   .dbsym e display_data _display_data A[4:4]c
+ 0004           _count::
+ 0004                   .blkb 1
+ 0005                   .dbsym e count _count c
+ 0005           _com_in_buf::
+ 0005                   .blkb 50
+ 0037                   .dbsym e com_in_buf _com_in_buf A[50:50]c
+ 0037           _shu4::
+ 0037                   .blkb 1
+ 0038                   .dbsym e shu4 _shu4 c
+ 0038           _shu3::
+ 0038                   .blkb 1
+ 0039                   .dbsym e shu3 _shu3 c
+ 0039           _shu2::
+ 0039                   .blkb 1
+ 003A                   .dbsym e shu2 _shu2 c
+ 003A           _shu1::
+ 003A                   .blkb 1
+ 003B                   .dbsym e shu1 _shu1 c
+ 003B           _mode::
+ 003B                   .blkb 1
+ 003C                   .dbsym e mode _mode c
+ 003C           _crcdat::
+ 003C                   .blkb 2
+ 003E                   .dbsym e crcdat _crcdat i
+ 003E           _geshu::
+ 003E                   .blkb 1
+ 003F                   .dbsym e geshu _geshu c
+ 003F           _shu::
+ 003F                   .blkb 4
+ 0043                   .dbsym e shu _shu A[4:4]c
+ 0043           _datbuf::
+ 0043                   .blkb 4
+ 0047                   .dbsym e datbuf _datbuf A[4:4]c
+ 0047           ; } 
